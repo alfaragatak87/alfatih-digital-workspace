@@ -35,6 +35,22 @@ if (empty($_SESSION['username'])) {
         $pd = json_decode($puser['profile_data'] ?? '{}', true) ?? [];
         $pFoto = !empty($puser['foto_profil']) && $puser['foto_profil'] !== 'default.png' ? PROFILE_IMG_DIR . $puser['foto_profil'] : 'https://ui-avatars.com/api/?name=' . urlencode($puser['nama_lengkap'] ?? $uname) . '&background=1a1a1a&color=ffffff&bold=true&size=200';
         
+        $ident   = $pd['identitas'] ?? [];
+        $name    = $ident['nama_lengkap'] ?? $puser['nama_lengkap'] ?? $uname;
+        $profesi = $ident['profesi'] ?? '';
+        $tagline = $ident['tagline'] ?? '';
+        $summary = $ident['summary'] ?? '';
+        $github  = $ident['github'] ?? '';
+        $linkedin= $ident['linkedin'] ?? '';
+        $insta   = $ident['instagram'] ?? '';
+        $email   = $ident['email'] ?? '';
+        $phone   = $ident['phone'] ?? '';
+        $loc     = $ident['location'] ?? '';
+        $edu     = $pd['pendidikan'] ?? [];
+        $exp     = $pd['pengalaman'] ?? [];
+        $skills  = $pd['keahlian'] ?? [];
+        $porto   = $pd['portfolio'] ?? [];
+
         include __DIR__ . '/views/pages/portfolio_page.php';
         exit;
     } else {

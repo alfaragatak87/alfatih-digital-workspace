@@ -13,7 +13,7 @@ error_reporting(E_ALL);
 define('DB_HOST',         'localhost');
 define('DB_USER',         'mckmmukg_alfa');
 define('DB_PASS',         'Alfaragatak87');
-define('DB_NAME',         'mckmmukg_undangan');
+define('DB_NAME',         'mckmmukg_utama');
 define('SITE_URL',        'https://gawe.my.id');
 define('UPLOAD_DIR',      'uploads/files/');
 define('PROFILE_IMG_DIR', 'uploads/');
@@ -52,3 +52,4 @@ $mysqli->query("UPDATE `users` SET `role` = 'superadmin' WHERE `username` = 'alf
 $mysqli->query("UPDATE `users` SET `role` = 'admin'
                 WHERE `username` != 'alfa'
                 AND (`role` = 'bapak' OR `role` = 'ajay' OR `role` = 'user')");
+l
