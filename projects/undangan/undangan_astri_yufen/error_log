@@ -1,0 +1,60 @@
+[02-May-2026 01:10:44 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/wdwynudn/public_html/koneksi.php:7
+Stack trace:
+#0 /home/wdwynudn/public_html/koneksi.php(7): mysqli_connect()
+#1 /home/wdwynudn/public_html/index.php(2): include('/home/wdwynudn/...')
+#2 {main}
+  thrown in /home/wdwynudn/public_html/koneksi.php on line 7
+[03-May-2026 00:10:49 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/wdwynudn/public_html/koneksi.php:7
+Stack trace:
+#0 /home/wdwynudn/public_html/koneksi.php(7): mysqli_connect()
+#1 /home/wdwynudn/public_html/index.php(2): include('/home/wdwynudn/...')
+#2 {main}
+  thrown in /home/wdwynudn/public_html/koneksi.php on line 7
+[03-May-2026 00:10:50 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/wdwynudn/public_html/koneksi.php:7
+Stack trace:
+#0 /home/wdwynudn/public_html/koneksi.php(7): mysqli_connect()
+#1 /home/wdwynudn/public_html/index.php(2): include('/home/wdwynudn/...')
+#2 {main}
+  thrown in /home/wdwynudn/public_html/koneksi.php on line 7
+[03-May-2026 00:10:51 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/wdwynudn/public_html/koneksi.php:7
+Stack trace:
+#0 /home/wdwynudn/public_html/koneksi.php(7): mysqli_connect()
+#1 /home/wdwynudn/public_html/index.php(2): include('/home/wdwynudn/...')
+#2 {main}
+  thrown in /home/wdwynudn/public_html/koneksi.php on line 7
+[03-May-2026 00:10:54 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/wdwynudn/public_html/koneksi.php:7
+Stack trace:
+#0 /home/wdwynudn/public_html/koneksi.php(7): mysqli_connect()
+#1 /home/wdwynudn/public_html/index.php(2): include('/home/wdwynudn/...')
+#2 {main}
+  thrown in /home/wdwynudn/public_html/koneksi.php on line 7
+[03-May-2026 00:10:55 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/wdwynudn/public_html/koneksi.php:7
+Stack trace:
+#0 /home/wdwynudn/public_html/koneksi.php(7): mysqli_connect()
+#1 /home/wdwynudn/public_html/index.php(2): include('/home/wdwynudn/...')
+#2 {main}
+  thrown in /home/wdwynudn/public_html/koneksi.php on line 7
+[03-May-2026 00:10:56 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/wdwynudn/public_html/koneksi.php:7
+Stack trace:
+#0 /home/wdwynudn/public_html/koneksi.php(7): mysqli_connect()
+#1 /home/wdwynudn/public_html/index.php(2): include('/home/wdwynudn/...')
+#2 {main}
+  thrown in /home/wdwynudn/public_html/koneksi.php on line 7
+[03-May-2026 14:10:40 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/wdwynudn/public_html/koneksi.php:7
+Stack trace:
+#0 /home/wdwynudn/public_html/koneksi.php(7): mysqli_connect()
+#1 /home/wdwynudn/public_html/index.php(2): include('/home/wdwynudn/...')
+#2 {main}
+  thrown in /home/wdwynudn/public_html/koneksi.php on line 7
+[03-May-2026 20:47:09 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/wdwynudn/public_html/koneksi.php:7
+Stack trace:
+#0 /home/wdwynudn/public_html/koneksi.php(7): mysqli_connect()
+#1 /home/wdwynudn/public_html/index.php(2): include('/home/wdwynudn/...')
+#2 {main}
+  thrown in /home/wdwynudn/public_html/koneksi.php on line 7
+[04-May-2026 01:10:46 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/wdwynudn/public_html/koneksi.php:7
+Stack trace:
+#0 /home/wdwynudn/public_html/koneksi.php(7): mysqli_connect()
+#1 /home/wdwynudn/public_html/index.php(2): include('/home/wdwynudn/...')
+#2 {main}
+  thrown in /home/wdwynudn/public_html/koneksi.php on line 7

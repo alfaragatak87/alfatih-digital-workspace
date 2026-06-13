@@ -1,0 +1,6 @@
+[03-May-2026 00:08:08 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/wdwynudn/public_html/koneksi.php:7
+Stack trace:
+#0 /home/wdwynudn/public_html/koneksi.php(7): mysqli_connect()
+#1 /home/wdwynudn/public_html/process/ambil-ucapan.php(2): include('/home/wdwynudn/...')
+#2 {main}
+  thrown in /home/wdwynudn/public_html/koneksi.php on line 7

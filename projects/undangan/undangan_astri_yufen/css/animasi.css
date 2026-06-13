@@ -1,0 +1,53 @@
+/* =========================================
+   CSS ANIMASI ROYAL SOGAN
+   Undangan Astri & Yufen
+========================================= */
+
+/* 1. Efek Debu Emas Berjatuhan (Particle) */
+#particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; z-index: 1; overflow: hidden; }
+.particle { position: absolute; width: 4px; height: 4px; background: rgba(212, 175, 55, 0.6); border-radius: 50%; box-shadow: 0 0 8px rgba(212, 175, 55, 0.8); animation: fall linear infinite; }
+@keyframes fall {
+    0% { transform: translateY(-10vh) scale(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(110vh) scale(1); opacity: 0; }
+}
+
+/* 2. Animasi Gunungan Membelah (Gate) - Dijalankan via JS */
+.gate-open-left { transform: translateX(-100vw) rotate(-20deg) !important; opacity: 0; }
+.gate-open-right { transform: translateX(100vw) rotate(20deg) scaleX(-1) !important; opacity: 0; }
+
+/* 3. Efek Mengambang Karakter */
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-float-delay { animation: float 4s ease-in-out infinite; animation-delay: 2s; }
+@keyframes float { 
+    0%, 100% { transform: translateY(0); } 
+    50% { transform: translateY(-15px); box-shadow: 0 15px 30px rgba(212,175,55,0.6); } 
+}
+
+/* 4. Detak Jantung Ampersand (&) */
+.heart-beat { animation: heartbeat 1.5s infinite; }
+@keyframes heartbeat { 
+    0% { transform: scale(1); } 
+    15% { transform: scale(1.1); color: var(--gold); } 
+    30% { transform: scale(1); } 
+    45% { transform: scale(1.1); color: var(--gold); } 
+    60% { transform: scale(1); } 
+}
+
+/* 5. Nafas Pelan (Bismillah) */
+.pulse-slow { animation: pulseSlow 3s ease-in-out infinite; }
+@keyframes pulseSlow { 
+    0%, 100% { transform: scale(1); opacity: 0.9; filter: drop-shadow(0 0 5px rgba(212,175,55,0.2)); } 
+    50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 15px rgba(212,175,55,0.6)); } 
+}
+
+/* 6. Goyang Pelan (Gunungan Bawah) */
+.animate-wiggle { animation: wiggle 5s ease-in-out infinite; opacity: 0.3; margin: 40px auto; width: 150px; }
+@keyframes wiggle { 
+    0%, 100% { transform: rotate(-3deg); } 
+    50% { transform: rotate(3deg); } 
+}
+
+/* 7. Putaran CD Musik */
+.fa-spin { animation: fa-spin 4s infinite linear; }
