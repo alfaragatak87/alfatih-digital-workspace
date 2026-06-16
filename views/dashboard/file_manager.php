@@ -59,13 +59,13 @@ if ($ws_view === 'trash') $base_url .= "view=trash&";
     echo "<a href='?page=workspace&filter=semua' class='chip ".(($admin_filter==='semua')?'active':'')."'><i class='fa-solid fa-users'></i> Semua</a></div>";
 } ?>
 
-<div id="workspaceContainer" class="view-list">
-<div class="list-header">
+<div id="workspaceContainer" class="view-grid drive-layout">
+<div class="list-header" id="driveListHeader" style="display:none; padding: 0 16px; border-bottom: 1px solid #e0e0e0; font-size: 0.875rem; font-weight: 500; color: #444746; grid-template-columns: 36px 1fr 160px 140px 90px 40px; align-items: center; height: 48px;">
     <div class="select-all-wrap"><input type="checkbox" class="item-checkbox" id="selectAllHeader" onclick="toggleSelectAll(this)" style="opacity:1;"></div>
-    <div><a href="<?= $base_url ?>sort=<?= ($sort==='nama_asc')?'nama_desc':'nama_asc' ?>">Nama <?php if($sort==='nama_asc')echo '&darr;';elseif($sort==='nama_desc')echo '&uarr;';?></a></div>
+    <div><a href="<?= $base_url ?>sort=<?= ($sort==='nama_asc')?'nama_desc':'nama_asc' ?>" style="color:#444746; text-decoration:none;">Nama <?php if($sort==='nama_asc')echo '&darr;';elseif($sort==='nama_desc')echo '&uarr;';?></a></div>
     <div class="col-owner">Pemilik</div>
-    <div class="col-date"><a href="<?= $base_url ?>sort=<?= ($sort==='date_desc')?'date_asc':'date_desc' ?>">Tanggal</a></div>
-    <div class="col-size">Ukuran</div>
+    <div class="col-date"><a href="<?= $base_url ?>sort=<?= ($sort==='date_desc')?'date_asc':'date_desc' ?>" style="color:#444746; text-decoration:none;">Terakhir diubah <?php if($sort==='date_asc')echo '&darr;';elseif($sort==='date_desc')echo '&uarr;';?></a></div>
+    <div class="col-size" style="text-align:left;">Ukuran file</div>
     <div></div>
 </div>
 <?php
@@ -153,30 +153,40 @@ if ($ws_view === 'stats') {
     
     $stmt = $mysqli->prepare($f_sql);
     if ($f_types) { $stmt->bind_param($f_types, ...$f_params); }
-    $stmt->execute(); $res = $stmt->get_result(); $has = false; $stmt->close();
+    $stmt->execute(); $res = $stmt->get_result(); $has_folders = false; $has_files = false;
+    
+    // RENDER FOLDERS
+    $folder_html = "";
     while ($f = $res->fetch_assoc()) {
-        $has = true; $sn = h($f['nama_folder']); $sd = h($f['deskripsi']??'');
+        $has_folders = true; $sn = h($f['nama_folder']); $sd = h($f['deskripsi']??'');
         $av = 'https://ui-avatars.com/api/?name='.urlencode($f['owner_username']).'&background=1a1a1a&color=ffffff&size=32';
         $ah = "<a href='?page=workspace&folder_id={$f['id']}' class='btn-rs-action btn-rs-primary'><i class='fa-solid fa-folder-open'></i> Buka</a><a href='?action=download_zip&folder_id={$f['id']}' class='btn-rs-action btn-rs-secondary'><i class='fa-solid fa-file-zipper'></i> ZIP</a><button onclick=\"openMoveModal('folder',{$f['id']},'$sn')\" class='btn-rs-action btn-rs-secondary'><i class='fa-solid fa-folder-tree'></i> Pindah</button><a href='?page=workspace&action=soft_delete_folder&id={$f['id']}' class='btn-rs-action btn-rs-danger'><i class='fa-solid fa-trash-can'></i> Hapus</a>";
-        echo "<div class='item-card' draggable='true' ondblclick=\"window.location='?page=workspace&folder_id={$f['id']}'\" onclick='handleItemClick(event,this)' data-id='{$f['id']}' data-item-type='folder' data-type='folder' data-name='$sn' data-icon='fa-solid {$f['icon']}' data-color='{$f['warna']}' data-owner='".h($f['owner_username'])."' data-date='-' data-size='-' data-desc='$sd' data-url='' data-tags='' data-share='' data-preview='none'><input type='checkbox' class='item-checkbox' onclick='handleCheckbox(event,this)'><div class='hidden-action-html' style='display:none;'>$ah</div><div class='item-info-wrap'><div class='item-icon-lg' style='color:#555;'><i class='fa-solid fa-folder'></i></div><div class='item-name'>$sn</div></div><div class='col-owner'><img src='$av' alt=''> ".h($f['owner_username'])."</div><div class='col-date'>-</div><div class='col-size'>-</div><div class='action-wrapper'><button class='btn-dots' onclick='toggleActionMenu(event,\"mf_{$f['id']}\")'><i class='fa-solid fa-ellipsis-vertical'></i></button><div id='mf_{$f['id']}' class='action-dropdown'><a href='?page=workspace&folder_id={$f['id']}'><i class='fa-solid fa-folder-open'></i> Buka folder</a><a href='?action=download_zip&folder_id={$f['id']}'><i class='fa-solid fa-file-zipper'></i> Download ZIP</a><button onclick=\"openMoveModal('folder',{$f['id']},'$sn');closeAllMenus();\"><i class='fa-solid fa-folder-tree'></i> Pindahkan</button><button onclick=\"openEditModal({$f['id']},'$sn','$sd','{$f['icon']}','{$f['warna']}');closeAllMenus();\"><i class='fa-solid fa-pen'></i> Edit</button><button onclick=\"startInlineRename(this.closest('.item-card'));closeAllMenus();\"><i class='fa-solid fa-i-cursor'></i> Ganti nama</button><hr class='menu-divider'><a href='?page=workspace&action=soft_delete_folder&id={$f['id']}' style='color:var(--danger);'><i class='fa-solid fa-trash'></i> Hapus</a></div></div></div>";
+        $folder_html .= "<div class='item-card drive-folder-card' draggable='true' ondblclick=\"window.location='?page=workspace&folder_id={$f['id']}'\" onclick='handleItemClick(event,this)' data-id='{$f['id']}' data-item-type='folder' data-type='folder' data-name='$sn' data-icon='fa-solid {$f['icon']}' data-color='{$f['warna']}' data-owner='".h($f['owner_username'])."' data-date='-' data-size='-' data-desc='$sd' data-url='' data-tags='' data-share='' data-preview='none'><input type='checkbox' class='item-checkbox' onclick='handleCheckbox(event,this)'><div class='hidden-action-html' style='display:none;'>$ah</div><div class='item-info-wrap'><div class='item-icon-lg' style='color:var(--text-main);'><i class='fa-solid fa-folder'></i></div><div class='item-name'>$sn</div></div><div class='col-owner'><img src='$av' alt=''> ".h($f['owner_username'])."</div><div class='col-date'>-</div><div class='col-size'>-</div><div class='action-wrapper'><button class='btn-dots' onclick='toggleActionMenu(event,\"mf_{$f['id']}\")'><i class='fa-solid fa-ellipsis-vertical'></i></button><div id='mf_{$f['id']}' class='action-dropdown'><a href='?page=workspace&folder_id={$f['id']}'><i class='fa-solid fa-folder-open'></i> Buka folder</a><a href='?action=download_zip&folder_id={$f['id']}'><i class='fa-solid fa-file-zipper'></i> Download ZIP</a><button onclick=\"openMoveModal('folder',{$f['id']},'$sn');closeAllMenus();\"><i class='fa-solid fa-folder-tree'></i> Pindahkan</button><button onclick=\"openEditModal({$f['id']},'$sn','$sd','{$f['icon']}','{$f['warna']}');closeAllMenus();\"><i class='fa-solid fa-pen'></i> Edit</button><button onclick=\"startInlineRename(this.closest('.item-card'));closeAllMenus();\"><i class='fa-solid fa-i-cursor'></i> Ganti nama</button><hr class='menu-divider'><a href='?page=workspace&action=soft_delete_folder&id={$f['id']}' style='color:var(--danger);'><i class='fa-solid fa-trash'></i> Hapus</a></div></div></div>";
+    }
+    $stmt->close();
+    
+    if($has_folders){
+        echo "<div class='drive-section-title'>Folder</div>";
+        echo "<div class='drive-grid-folders'>$folder_html</div>";
     }
 
+    $file_html = "";
     if ($active_folder) {
         $i_sql = "SELECT * FROM files WHERE folder_id=? AND is_deleted=0"; $i_types = 'i'; $i_params = [$active_folder];
         if ($search_query) { $i_sql .= " AND (nama_file LIKE ? OR tags LIKE ?)"; $i_types .= 'ss'; $i_params[] = '%' . $search_query . '%'; $i_params[] = '%' . $search_query . '%'; }
         $i_sql .= " ORDER BY $order_i";
         $stmt = $mysqli->prepare($i_sql); $stmt->bind_param($i_types, ...$i_params); $stmt->execute(); $res = $stmt->get_result(); $stmt->close();
         while ($item = $res->fetch_assoc()) {
-            $has = true; $is_lnk = ($item['jenis']==='link'); $ds = date('d M Y', strtotime($item['tanggal_upload']));
+            $has_files = true; $is_lnk = ($item['jenis']==='link'); $ds = date('M d, Y', strtotime($item['tanggal_upload']));
             $av = 'https://ui-avatars.com/api/?name='.urlencode($item['owner_username']).'&background=1a1a1a&color=ffffff&size=32';
             $sn = h($item['nama_file']); $st = h($item['tags']??''); $pt = $is_lnk?'none':getPreviewType($item['nama_file']);
             if ($is_lnk) {
-                $sz="Tautan"; $js_icon="fa-solid fa-link"; $ic_col="#555"; $file_url='';
+                $sz="Link"; $js_icon="fa-solid fa-link"; $ic_col="var(--text-main)"; $file_url='';
                 $ah="<a href='".h($item['link_url'])."' target='_blank' class='btn-rs-action btn-rs-primary'><i class='fa-solid fa-arrow-up-right-from-square'></i> Kunjungi</a><button onclick=\"copyLink('".h($item['link_url'])."')\" class='btn-rs-action btn-rs-secondary'><i class='fa-solid fa-copy'></i> Salin URL</button><a href='?page=workspace&action=soft_delete_item&item_id={$item['id']}' class='btn-rs-action btn-rs-danger'><i class='fa-solid fa-trash-can'></i> Hapus</a>";
                 $dot_actions="<a href='".h($item['link_url'])."' target='_blank'><i class='fa-solid fa-arrow-up-right-from-square'></i> Buka</a>";
             } else {
                 $id_data=getFileIcon($item['nama_file']); $js_icon="fa-solid ".$id_data[0]; $ic_col=$id_data[1];
-                $fp2=UPLOAD_DIR.$item['file_path']; $file_url=$fp2; $sz=file_exists($fp2)?formatBytes(filesize($fp2)):'Tidak valid';
+                $fp2=UPLOAD_DIR.$item['file_path']; $file_url=$fp2; $sz=file_exists($fp2)?formatBytes(filesize($fp2)):'Invalid';
                 $tok=$item['share_token']??''; $share_full=SITE_URL.'/index.php?share='.$tok;
                 $wa_txt=urlencode("Halo, berikut file:\n*{$item['nama_file']}*\nLink: {$share_full}"); $wa_link="https://api.whatsapp.com/send?text=".$wa_txt;
                 $ah="<button onclick=\"openPreview('".addslashes($sn)."','$fp2','$pt',{$item['id']})\" class='btn-rs-action btn-rs-primary'><i class='fa-regular fa-eye'></i> Pratinjau</button><a href='?action=download_file&file_id={$item['id']}' class='btn-rs-action btn-rs-secondary'><i class='fa-solid fa-download'></i> Download</a>";
@@ -185,10 +195,21 @@ if ($ws_view === 'stats') {
                 $ah.="<button onclick=\"openMoveModal('file',{$item['id']},'$sn')\" class='btn-rs-action btn-rs-secondary'><i class='fa-solid fa-folder-tree'></i> Pindah</button><a href='?page=workspace&action=soft_delete_item&item_id={$item['id']}' class='btn-rs-action btn-rs-danger'><i class='fa-solid fa-trash-can'></i> Hapus</a>";
                 $dot_actions="<button onclick=\"openPreview('".addslashes($sn)."','$fp2','$pt',{$item['id']});closeAllMenus();\"><i class='fa-regular fa-eye'></i> Pratinjau</button><a href='?action=download_file&file_id={$item['id']}'><i class='fa-solid fa-download'></i> Download</a>";
             }
-            echo "<div class='item-card' draggable='true' onclick='handleItemClick(event,this)' data-id='{$item['id']}' data-item-type='{$item['jenis']}' data-type='{$item['jenis']}' data-name='$sn' data-icon='$js_icon' data-color='$ic_col' data-owner='".h($item['owner_username'])."' data-date='$ds' data-size='$sz' data-desc='' data-url='$file_url' data-tags='$st' data-share='".h($tok??'')."' data-preview='$pt'><input type='checkbox' class='item-checkbox' onclick='handleCheckbox(event,this)'><div class='hidden-action-html' style='display:none;'>$ah</div><div class='item-info-wrap'><div class='item-icon-lg' style='color:#555;'><i class='$js_icon'></i></div><div class='item-name'>$sn".($st?"<span class='tag-badge'><i class='fa-solid fa-tag'></i> $st</span>":"")."</div></div><div class='col-owner'><img src='$av' alt=''> ".h($item['owner_username'])."</div><div class='col-date'>$ds</div><div class='col-size'>$sz</div><div class='action-wrapper'><button class='btn-dots' onclick='toggleActionMenu(event,\"mi_{$item['id']}\")'><i class='fa-solid fa-ellipsis-vertical'></i></button><div id='mi_{$item['id']}' class='action-dropdown'>$dot_actions<button onclick=\"startInlineRename(this.closest('.item-card'));closeAllMenus();\"><i class='fa-solid fa-i-cursor'></i> Ganti nama</button><button onclick=\"openMoveModal('file',{$item['id']},'$sn');closeAllMenus();\"><i class='fa-solid fa-folder-tree'></i> Pindahkan</button><hr class='menu-divider'><a href='?page=workspace&action=soft_delete_item&item_id={$item['id']}' style='color:var(--danger);'><i class='fa-solid fa-trash'></i> Hapus</a></div></div></div>";
+            // Tampilan File: menggunakan ikon preview (jika gambar) atau ikon biasa.
+            $img_preview = ($pt === 'image') ? "<img src='$fp2' class='drive-file-preview-img'>" : "<div class='drive-file-icon-placeholder'><i class='$js_icon' style='color:$ic_col;'></i></div>";
+            
+            $file_html .= "<div class='item-card drive-file-card' draggable='true' onclick='handleItemClick(event,this)' ondblclick=\"".($pt==='image'?"openPreview('".addslashes($sn)."','$fp2','$pt',{$item['id']})":"")."\" data-id='{$item['id']}' data-item-type='{$item['jenis']}' data-type='{$item['jenis']}' data-name='$sn' data-icon='$js_icon' data-color='$ic_col' data-owner='".h($item['owner_username'])."' data-date='$ds' data-size='$sz' data-desc='' data-url='$file_url' data-tags='$st' data-share='".h($tok??'')."' data-preview='$pt'><input type='checkbox' class='item-checkbox' onclick='handleCheckbox(event,this)'><div class='hidden-action-html' style='display:none;'>$ah</div><div class='drive-file-preview'>$img_preview</div><div class='item-info-wrap'><div class='item-icon-sm'><i class='$js_icon' style='color:$ic_col;'></i></div><div class='item-name'>$sn".($st?"<span class='tag-badge'><i class='fa-solid fa-tag'></i> $st</span>":"")."</div></div><div class='col-owner'><img src='$av' alt=''> ".h($item['owner_username'])."</div><div class='col-date'>$ds</div><div class='col-size'>$sz</div><div class='action-wrapper'><button class='btn-dots' onclick='toggleActionMenu(event,\"mi_{$item['id']}\")'><i class='fa-solid fa-ellipsis-vertical'></i></button><div id='mi_{$item['id']}' class='action-dropdown'>$dot_actions<button onclick=\"startInlineRename(this.closest('.item-card'));closeAllMenus();\"><i class='fa-solid fa-i-cursor'></i> Ganti nama</button><button onclick=\"openMoveModal('file',{$item['id']},'$sn');closeAllMenus();\"><i class='fa-solid fa-folder-tree'></i> Pindahkan</button><hr class='menu-divider'><a href='?page=workspace&action=soft_delete_item&item_id={$item['id']}' style='color:var(--danger);'><i class='fa-solid fa-trash'></i> Hapus</a></div></div></div>";
         }
     }
-    if (!$has) echo "<div class='empty-state' onclick=\"openModal('addFolderModal')\"><i class='fa-solid fa-folder-plus'></i><h3>Workspace Kosong</h3><p>Klik untuk membuat folder baru.</p></div>";
+    
+    if($has_files){
+        echo "<div class='drive-section-title'>File</div>";
+        echo "<div class='drive-grid-files'>$file_html</div>";
+    }
+
+    if (!$has_folders && !$has_files) {
+        echo "<div class='empty-state' onclick=\"openModal('addFolderModal')\"><i class='fa-brands fa-google-drive' style='font-size:4rem;color:var(--text-muted);opacity:0.3;'></i><h3 style='margin-top:20px;font-size:1.4rem;'>Tempat untuk semua file Anda</h3><p style='font-size:1rem;'>Gunakan tombol 'Baru' untuk mengunggah atau membuat.</p></div>";
+    }
 }
 ?>
 </div>

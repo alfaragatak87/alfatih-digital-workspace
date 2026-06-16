@@ -106,9 +106,12 @@ if (
                 'nama_lengkap'  => trim($_POST['pd_nama']         ?? ''),
                 'profesi'       => trim($_POST['pd_profesi']      ?? ''),
                 'tagline'       => trim($_POST['pd_tagline']      ?? ''),
+                'provinsi'      => trim($_POST['pd_provinsi']     ?? ''),
+                'kabupaten'     => trim($_POST['pd_kabupaten']    ?? ''),
+                'kecamatan'     => trim($_POST['pd_kecamatan']    ?? ''),
+                'desa'          => trim($_POST['pd_desa']         ?? ''),
                 'email'         => trim($_POST['pd_email']        ?? ''),
                 'phone'         => trim($_POST['pd_phone']        ?? ''),
-                'location'      => trim($_POST['pd_location']     ?? ''),
                 'github'        => trim($_POST['pd_github']       ?? ''),
                 'linkedin'      => trim($_POST['pd_linkedin']     ?? ''),
                 'instagram'     => trim($_POST['pd_instagram']    ?? ''),
@@ -133,6 +136,8 @@ if (
                     'bidang'        => trim($_POST['edu_bidang'][$ei]   ?? ''),
                     'tahun_mulai'   => trim($_POST['edu_mulai'][$ei]    ?? ''),
                     'tahun_selesai' => trim($_POST['edu_selesai'][$ei]  ?? ''),
+                    'is_current'    => (isset($_POST['edu_is_current_tmp'][$ei]) && $_POST['edu_is_current_tmp'][$ei] === '1') ? 1 : 0,
+                    'ipk_nilai'     => trim($_POST['edu_ipk'][$ei]      ?? ''),
                     'deskripsi'     => trim($_POST['edu_desc'][$ei]     ?? ''),
                 ];
             }
@@ -148,7 +153,9 @@ if (
                 $exp_items[] = [
                     'jabatan'    => trim($jab),
                     'perusahaan' => trim($_POST['exp_perusahaan'][$ei] ?? ''),
-                    'periode'    => trim($_POST['exp_periode'][$ei]    ?? ''),
+                    'tahun_mulai'=> trim($_POST['exp_mulai'][$ei]      ?? ''),
+                    'tahun_selesai'=> trim($_POST['exp_selesai'][$ei]  ?? ''),
+                    'is_current' => (isset($_POST['exp_is_current_tmp'][$ei]) && $_POST['exp_is_current_tmp'][$ei] === '1') ? 1 : 0,
                     'deskripsi'  => trim($_POST['exp_desc'][$ei]       ?? ''),
                 ];
             }
@@ -166,8 +173,9 @@ if (
             foreach ($skill_names as $si => $sn) {
                 $skill_items[] = [
                     'nama'      => trim($sn),
-                    'level'     => (int)($_POST['skill_level'][$si]    ?? 70),
+                    'level'     => trim($_POST['skill_level'][$si]     ?? 'Menengah'),
                     'kategori'  => trim($_POST['skill_kategori'][$si]  ?? ''),
+                    'logo_icon' => trim($_POST['skill_logo'][$si]      ?? ''),
                 ];
             }
             $pd['keahlian'] = $skill_items;
