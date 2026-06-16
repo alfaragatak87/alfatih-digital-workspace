@@ -94,7 +94,7 @@ flowchart TD
     PilihanDasbor -- "Klik 'Keluar'" --> Logout["Sistem Mengeluarkan Akun"]:::process
     Logout --> HalamanDepan
 
-    linkStyle default stroke:#00e5ff,stroke-width:2px,stroke-dasharray: 15 250,animation: dash 2s linear infinite;
+    linkStyle default stroke:#00e5ff,stroke-width:2px,stroke-width:2px;
 ```
 
 ### 2. Alur Pengelola File (Drive Storage Pribadi)
@@ -132,7 +132,7 @@ flowchart TD
     MenuKonteks -- "Klik 'Hapus'" --> KonfirmasiHapus{"Apakah Anda Yakin?"}:::btn
     KonfirmasiHapus -- "Ya, Hapus" --> Terhapus["File Dihapus Permanen"]:::finish --> TampilBaru
 
-    linkStyle default stroke:#facc15,stroke-width:2px,stroke-dasharray: 15 250,animation: dash 2s linear infinite;
+    linkStyle default stroke:#facc15,stroke-width:2px,stroke-width:2px;
 ```
 
 ### 3. Alur Pembuat CV Digital & Portofolio (CV Builder)
@@ -166,7 +166,7 @@ flowchart TD
     
     BukaCV --> Bagikan["Tautan Halaman CV Siap Dibagikan ke Perusahaan / Klien (Selesai)"]:::page
 
-    linkStyle default stroke:#ec4899,stroke-width:2px,stroke-dasharray: 15 250,animation: dash 2s linear infinite;
+    linkStyle default stroke:#ec4899,stroke-width:2px,stroke-width:2px;
 ```
 
 ## 📂 Struktur Direktori Tingkat Lanjut
