@@ -1,168 +1,133 @@
-<div align="center">
+# 🕵️‍♀️ Alfatih Digital Workspace (Traceface): Platform Manajemen Terpadu
 
-# 🚀 Alfatih Digital Workspace (Traceface)
+Alfatih Digital Workspace (Traceface) adalah sebuah platform web komprehensif yang dirancang khusus untuk memfasilitasi publik dan admin dalam manajemen file (*Cloud Storage*), pembuatan *CV & Portfolio Builder*, serta direktori talenta profesional.
 
-### Terorganisir. Profesional. Tanpa Hambatan.
+Proyek ini dibangun dan dirancang dengan mengedepankan performa tinggi melalui arsitektur Monolitik PHP Native, guna memastikan akses data super cepat dan kompatibilitas di segala perangkat.
 
-Platform ruang kerja digital berbasis web super lengkap yang menggabungkan **Manajemen File**, **CV & Portfolio Builder**, **Direktori Talenta**, dan **Personal Branding** dalam satu ekosistem terpadu. Dibangun dengan fokus pada kecepatan, keamanan, dan keindahan antarmuka (UI/UX).
-
-![PHP](https://img.shields.io/badge/PHP-8.x-blue)
-![MySQL](https://img.shields.io/badge/MySQL-Database-orange)
-![PWA](https://img.shields.io/badge/PWA-Supported-green)
-![Antigravity](https://img.shields.io/badge/IDE-Antigravity-purple)
-![License](https://img.shields.io/badge/License-MIT-success)
-
-</div>
+![Status](https://img.shields.io/badge/Status-Completed-success) ![Engine](https://img.shields.io/badge/Engine-PHP_8.x-blue) ![Database](https://img.shields.io/badge/Database-MySQLi-informational) ![IDE](https://img.shields.io/badge/IDE-Antigravity-purple)
 
 ---
 
-## 📖 Tentang Proyek (Metode & Desain)
+## 1. Arsitektur Proyek
 
-**Alfatih Digital Workspace (Traceface)** dirancang menggunakan pendekatan *Editorial Minimalist Design* (B&W) dengan sentuhan futuristik. Proyek ini memadukan konsep *Cloud Storage* (seperti Google Drive) dengan *Professional Branding* (seperti LinkedIn).
-
-### Data & Literatur Pendukung
-Dalam dunia digital modern, seorang profesional membutuhkan dua hal utama:
-1. **Penyimpanan Berbasis Awan (Cloud):** Kemampuan untuk mengakses, mengelola, dan membagikan dokumen kapan saja.
-2. **Presentasi Diri (Branding):** Data menunjukkan kandidat dengan portofolio terstruktur memiliki persentase dilirik *recruiter* 70% lebih tinggi. 
-Oleh karena itu, sistem ini menggabungkan kedua metodologi tersebut dalam satu platform.
-
----
-
-## 🏗 Arsitektur Proyek & Teknologi
-
-Proyek ini dibangun menggunakan arsitektur **Monolitik** (Single Codebase) yang efisien, digerakkan oleh **Native PHP 8.x** (Object-Oriented) untuk performa maksimum tanpa *overhead* framework berat.
-
-| Teknologi / Komponen | Fungsi Utama |
-| --- | --- |
-| **PHP 8.x (Native)** | *Backend logic*, *routing*, penanganan form, koneksi *database*. |
-| **MySQLi OOP** | Sistem basis data relasional. |
-| **HTML5 & CSS3** | Struktur dan desain antarmuka (*styling* manual tanpa *library* berat). |
-| **Vanilla JavaScript** | Penanganan interaksi UI (*drag & drop*, AJAX form submit, animasi). |
-| **PWA (Service Worker)** | Memungkinkan web diinstal di HP selayaknya aplikasi *native*. |
-| **Google Antigravity IDE**| Alat bantu pengembangan berbasis AI (Agentic Coding) yang membantu *refactoring* dan penyempurnaan proyek secara efisien. |
-
-### 📱 Penjelasan Integrasi Android (APK) / "Nyawa Utama" Android
-
-Jika sistem web ini dikonversi menjadi aplikasi Android (`.apk`), "nyawa utama" atau mesin penggeraknya terdiri dari tiga komponen berikut:
-
-1. **PWA (Progressive Web App):** Anda sudah memiliki `manifest.json` dan `sw.js`. Ini adalah nyawa pertama yang memungkinkan browser (seperti Chrome) menampilkan prompt "Install App". Aplikasi akan masuk ke *home screen* tanpa perlu *coding* Java/Kotlin.
-2. **WebView Wrapper (Android Native):** Untuk mengunggah ke Play Store, nyawa utamanya adalah komponen `WebView` di Android Studio (Java/Kotlin). `WebView` berfungsi seperti *browser* transparan di dalam aplikasi yang merender URL website Anda (`https://gawe.my.id`).
-3. **Hardware Bridge:** Untuk fitur tingkat lanjut (kamera, notifikasi push, penyimpanan lokal), digunakan *bridge* JavaScript ke Java agar web PHP Anda bisa berkomunikasi langsung dengan perangkat keras ponsel.
-
----
-
-## 📂 Struktur Pohon File (File Tree)
-
-Berikut adalah anatomi folder dari Traceface:
-
-```text
-C:\hosting\
-├── actions/                  # File pemrosesan data (Backend Action)
-│   └── profile_action.php    # Pemrosesan simpan CV/Portofolio
-├── assets/                   # Resource Statis (Front-end)
-│   ├── css/                  # File styling antarmuka
-│   ├── js/                   # Script interaksi DOM (app.js, dll)
-│   └── images/               # Gambar, SVG, Logo
-├── config/                   # File konfigurasi sistem (jika ada)
-├── core/                     # Plugin dan library eksternal (third-party)
-├── uploads/                  # Direktori tempat file pengguna disimpan
-│   └── files/                # File dokumen/media unggahan
-├── views/                    # Komponen Tampilan (Front-end HTML)
-│   ├── components/           # Bagian UI (navbar.php, sidebar.php, modals.php)
-│   ├── dashboard/            # Halaman Admin/User (home.php, cv_builder.php)
-│   └── pages/                # Halaman Publik (landing_page.php, portfolio_page.php)
-├── index.php                 # ENTRY POINT UTAMA (Controller & Router System)
-├── manifest.json             # Konfigurasi PWA
-├── sw.js                     # Service Worker PWA (Offline caching)
-└── README.md                 # Dokumentasi Proyek
-```
-
----
-
-## 🔄 Flowchart Sistem
-
-Berikut adalah alur kerja sistem dari sudut pandang pengguna.
+Proyek ini menggunakan pola arsitektur **Monolitik (Front Controller)**. Semua lalu lintas web bermuara ke satu pintu masuk utama (`index.php`), yang kemudian melakukan *routing* ke komponen tampilan (`tampilan/`) atau memproses logika *backend* (`aksi/`).
 
 ```mermaid
 graph TD
-    A[Pengguna Buka Website] --> B{Sudah Login?}
-    B -- Belum --> C[Landing Page]
-    C --> D[Halaman Login]
-    D --> |Validasi Berhasil| E[Dashboard / Beranda]
-    B -- Sudah --> E
+    A((Buka Web)) --> B(index.php)
+    B --> C{Cek Sesi Login?}
+    C -- Sesi Kosong --> D[halaman_pendaratan.php]
+    D --> E[Form Login]
+    E -->|Autentikasi Sukses| F
     
-    E --> F[Manajemen File & Folder]
-    F --> |Upload/Pindah/Hapus| G[Database & Folder 'uploads']
+    C -- Sudah Login --> F[beranda.php]
     
-    E --> H[CV & Portfolio Builder]
-    H --> |Isi Data Diri, Pendidikan, Skill| I[Simpan ke Field 'profile_data']
-    I --> J[Halaman Portfolio Publik]
+    F --> G[pengelola_file.php]
+    F --> H[pembuat_cv.php]
+    F --> I[halaman_portofolio.php]
     
-    J --> K[Bisa diakses Publik & Recruiter]
+    G --> J[(MySQL Database)]
+    H --> J
+    I --> J
 ```
 
 ---
 
-## 🛠 Penjelasan Fitur, File, dan Kode Utama
+## 2. Alur Aplikasi (Sequence Diagram)
 
-Seluruh logika sistem bermuara pada file raksasa **`index.php`**, yang bertindak sebagai *Front Controller*. 
+Berikut adalah interaksi fungsionalitas utama antar pengguna dan sistem (contoh: Alur Pembuatan Portofolio).
 
-### 1. Autentikasi (Login & Sesi)
-*   **File yang Digunakan:** `index.php`
-*   **Baris Kode:** `Baris 173 - 188` (Bagian `// LOGIN`)
-*   **Penjelasan:** Menggunakan metode POST `action='login'`. Sistem memverifikasi kecocokan *password* dengan algoritma `password_verify()` PHP dan mengatur `$_SESSION`.
-*   **Tampilan:** Diatur di bagian `renderPublicPage()` di dalam `index.php`.
+```mermaid
+sequenceDiagram
+    participant P as Pengguna
+    participant TF as Workspace (UI)
+    participant DB as Database
+    participant Pb as Publik (Recruiter)
 
-### 2. File & Folder Management (CRUD)
-*   **File yang Digunakan:** `index.php` dan `views/dashboard/file_manager.php` (tampilan).
-*   **Baris Kode Utama (`index.php`):**
-    *   *Upload File:* `Baris 283 - 299` (Menangkap `$_FILES` dan memindahkannya ke direktori `uploads/`).
-    *   *Buat Folder:* `Baris 259 - 267` (`INSERT INTO folders`).
-    *   *Pindah (Drag & Drop):* `Baris 153 - 159` (Mengupdate nilai `parent_id` menggunakan AJAX JSON).
-*   **Teknologi:** PHP PDO/MySQLi untuk eksekusi query, JavaScript Fetch API untuk aksi *Drag & Drop*.
+    rect rgb(30, 30, 30)
+    Note over P, DB: [1] Pengisian Data CV & Profil
+    P->>TF: Buka Halaman Pembuat CV
+    TF->>P: Tampilkan Form Input
+    P->>TF: Isi Data (Pendidikan, Skill, dll) & Simpan
+    TF->>DB: Kirim Payload JSON ke aksi_profil.php
+    DB-->>TF: Update tabel `users` sukses
+    TF-->>P: Tampilkan Notifikasi Berhasil
+    end
 
-### 3. Akses, Unduh & Cetak Dokumen
-*   **File yang Digunakan:** `index.php`
-*   **Baris Kode:** `Baris 117 - 132`
-*   **Penjelasan:** Fitur ini menutupi URL asli file untuk keamanan. Menggunakan `header('Content-Type')` dan `readfile()` untuk membaca isi *storage* biner, kemudian menampilkannya di *browser* (jika *View/Print*) atau memaksa pengunduhan (jika *Download*).
-
-### 4. CV & Portfolio Builder
-*   **File yang Digunakan:** `actions/profile_action.php` (Proses), `views/dashboard/cv_builder.php` (Input), `views/pages/portfolio_page.php` (Output).
-*   **Penjelasan:** Karena struktur CV kompleks, data dikonversi dari *form* ke *array* PHP, kemudian di-*encode* menjadi format JSON `json_encode()` dan disimpan di tabel `users` pada kolom `profile_data`. Saat halaman portofolio publik diakses (`index.php?portfolio=username`), data JSON tersebut di-*decode* untuk dirender di layar.
-
----
-
-## 💻 Tutorial Pemasangan (Instalasi Sistem)
-
-Ikuti langkah-langkah berikut untuk memasang aplikasi Alfatih Digital Workspace di server lokal (XAMPP/Laragon) atau Hosting CPanel:
-
-1. **Persiapan Database:**
-   * Buat *database* MySQL kosong (misal: `db_workspace`).
-   * *Import* file SQL bawaan ke dalam *database* tersebut (jika ada) agar struktur tabel terbentuk.
-
-2. **Konfigurasi File `index.php`:**
-   * Buka file `index.php` menggunakan teks editor (VS Code).
-   * Temukan baris `10` sampai `14`.
-   * Sesuaikan dengan kredensial *database* Anda:
-     ```php
-     define('DB_HOST', 'localhost');
-     define('DB_USER', 'root'); // Username database Anda
-     define('DB_PASS', '');     // Password database Anda
-     define('DB_NAME', 'db_workspace'); // Nama database Anda
-     define('SITE_URL', 'http://localhost/hosting'); // URL web Anda
-     ```
-
-3. **Pengaturan Izin Akses Direktori (Permissions):**
-   * Pastikan folder `uploads/` dan `uploads/files/` memiliki izin baca dan tulis (Read & Write / `CHMOD 755` atau `777` di hosting Linux).
-
-4. **Menjalankan Sistem:**
-   * Jika menggunakan XAMPP, simpan seluruh folder di dalam `htdocs/hosting/`.
-   * Buka browser dan ketik `http://localhost/hosting`.
-   * Anda akan melihat halaman *Landing Page*. Silakan login menggunakan akun yang sudah diatur di database (atau daftarkan melalui script jika tersedia).
+    rect rgb(40, 40, 40)
+    Note over P, Pb: [2] Akses Portofolio Publik
+    Pb->>TF: Akses URL (index.php?portfolio=username)
+    TF->>DB: Query pencarian profil
+    DB-->>TF: Return data JSON
+    TF->>TF: Decode JSON & Render Halaman
+    TF-->>Pb: Tampilkan Halaman Portofolio Profesional
+    end
+```
 
 ---
 
-<div align="center">
-<b>Alfatih Digital Workspace</b><br>
-Dibangun dengan ☕ dan dedikasi untuk profesionalisme digital.
-</div>
+## 3. Struktur Direktori & Pohon File
+
+```text
+hosting/
+├── aksi/                         # Logika pemrosesan data (Backend Action)
+│   ├── aksi_autentikasi.php      # Verifikasi Login/Logout
+│   ├── aksi_file.php             # Logika upload/hapus dokumen
+│   ├── aksi_pengguna.php         # Manajemen admin (Superadmin)
+│   └── aksi_profil.php           # Pemrosesan JSON pembuat CV
+├── aset/                         # Resource Statis (Front-end)
+│   ├── css/                      # File styling antarmuka
+│   ├── js/                       # Script interaksi DOM (Drag & Drop)
+│   └── images/                   # Gambar, SVG, Logo
+├── tampilan/                     # Komponen Tampilan (Front-end HTML)
+│   ├── dasbor/                   # Halaman internal setelah login
+│   │   ├── beranda.php           # Dasbor kendali utama
+│   │   ├── pembuat_cv.php        # Form input data diri
+│   │   ├── pengelola_file.php    # Manajemen file cloud storage
+│   │   └── pengelola_pengguna.php # Pengaturan akun (Admin)
+│   ├── halaman/                  # Halaman untuk publik
+│   │   ├── halaman_pendaratan.php # Landing page (Pintu masuk)
+│   │   └── halaman_portofolio.php # Resume online publik
+│   └── komponen/                 # Potongan UI (Navbar, Sidebar, Modals)
+├── unggahan/                     # Direktori penyimpanan fisik file
+├── index.php                     # [Pintu Masuk] Front Controller & Router
+├── manifest.json                 # Konfigurasi PWA (Progressive Web App)
+├── sw.js                         # Service Worker PWA (Offline caching)
+└── README.md                     # Dokumentasi Proyek
+```
+
+---
+
+## 4. Penjelasan Integrasi Android ("Nyawa Utama")
+
+Meskipun ini adalah sistem Web PHP, proyek ini telah didesain agar siap dikonversi menjadi aplikasi Android (`.apk`). Berikut adalah "nyawa utama" yang dipakai:
+
+- **PWA (Progressive Web App)**: File `manifest.json` dan `sw.js` memungkinkan situs ini diunduh langsung dari *browser* ke *homescreen* HP seperti aplikasi biasa.
+- **Android WebView**: Jika dibungkus dengan Android Studio (Java/Kotlin), nyawa utamanya adalah komponen `WebView` yang secara transparan menampilkan antarmuka web ke dalam layar aplikasi *native*.
+
+---
+
+## 5. Penjelasan Kode & Fungsionalitas Penting
+
+Setiap blok fitur memiliki relasi kuat dengan file `index.php` dan folder `aksi/`.
+
+- **Autentikasi (Login)**: Di-handle langsung di dalam `index.php` (baris khusus *POST HANDLERS*). Menggunakan `password_verify()` PHP untuk keamanan ekstra.
+- **Penyimpanan File**: Menggunakan API Fetch AJAX di `aset/js/app.js` yang mengirimkan data ke `index.php`, lalu file fisik dipindahkan ke folder `unggahan/`.
+- **Database (MySQL)**: Terkoneksi menggunakan metode `mysqli` OOP dengan karakter *encoding* `utf8mb4`.
+
+---
+
+## 6. Tutorial Pemasangan Lokal
+
+1. Instal XAMPP / Laragon di komputer Anda.
+2. Pindahkan seluruh folder `hosting/` ke dalam folder `htdocs/`.
+3. Buat *database* baru di MySQL (misal: `db_workspace`) dan eksekusi file SQL *dump* (jika ada).
+4. Buka file `index.php` dengan teks editor.
+5. Sesuaikan parameter koneksi di baris awal:
+   ```php
+   define('DB_HOST', 'localhost');
+   define('DB_USER', 'root');
+   define('DB_PASS', '');
+   define('DB_NAME', 'db_workspace');
+   ```
+6. Buka *browser* dan akses `http://localhost/hosting`. Sistem siap digunakan!
