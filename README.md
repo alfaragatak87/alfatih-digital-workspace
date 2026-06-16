@@ -50,133 +50,122 @@ Hak akses tertinggi (*Super Admin*) untuk mengelola ekosistem.
 
 ---
 
-## 🏗️ Arsitektur & Alur Kerja Sistem (System Workflows)
+## 🏗️ Peta Perjalanan Pengguna & Fitur Aplikasi (User Journey)
 
-Proyek ini dibangun dengan arsitektur **Monolitik (Front Controller)**, di mana `index.php` bertindak sebagai pintu masuk tunggal (Single Entry Point) yang mengatur seluruh *routing*, keamanan, dan manajemen sesi.
-
-Berikut adalah rincian alur kerja (*flowchart*) untuk setiap fitur utama di platform ini secara komprehensif.
+Bagian ini memetakan secara detail setiap tombol yang dapat diklik oleh pengguna, ke mana arahnya, dan apa yang terjadi di balik layar menggunakan bahasa yang mudah dipahami (tanpa bahasa pemrograman rumit).
 
 > [!TIP]
-> Garis putus-putus berwarna terang yang menghubungkan setiap proses merepresentasikan **"Energy Flow" (Alur Cahaya)** perjalanan data secara asinkron dari awal eksekusi (*Client*) hingga akhir (*Server/Database*).
+> Garis putus-putus bercahaya pada bagan di bawah ini merepresentasikan **Alur Perjalanan Pengguna** dari awal menekan tombol hingga fitur selesai diproses.
 
-### 1. Alur Autentikasi, Routing Utama, & Front Controller
-Alur ini membedakan secara ketat antara akses **Publik** (tanpa batas akses) dan **Sistem Internal** (harus login). Semua proses bermuara di `index.php`.
+### 1. Alur Masuk (Pintu Gerbang & Akses Utama)
+Memetakan perjalanan pertama kali seseorang mengunjungi website, dari mulai melihat halaman depan, mendaftar, hingga berhasil masuk ke Dasbor.
 
 ```mermaid
 flowchart TD
-    %% Define Styles untuk Efek Cahaya / Neon
+    %% Gaya Desain Node Gelap & Bercahaya
     classDef startEnd fill:#0f172a,stroke:#3b82f6,stroke-width:3px,color:#fff,rx:10,ry:10;
-    classDef process fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
-    classDef db fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981,shape:cylinder;
-    classDef decision fill:#334155,stroke:#f59e0b,stroke-width:2px,color:#f59e0b,shape:diamond;
+    classDef page fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
+    classDef btn fill:#334155,stroke:#f59e0b,stroke-width:2px,color:#f59e0b,shape:diamond;
+    classDef process fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981;
+
+    Mulai(["🌐 Pengunjung Membuka Website"]):::startEnd --> CekStatus{"Apakah Pengunjung <br/>Sudah Login Sebelumnya?"}:::btn
     
-    Start(["🌐 Mulai: Kunjungan Web"]):::startEnd --> FrontController["index.php <br/>(Front Controller & Router)"]:::process
-    
-    FrontController --> Init["Inisialisasi require_once config DB & helper"]:::process
-    Init --> CheckSession{"Validasi <br/>$_SESSION['user_id']"}:::decision
+    CekStatus -- "Belum" --> HalamanDepan["Berada di Halaman Pendaratan (Depan)"]:::page
+    CekStatus -- "Sudah" --> Dasbor["Langsung Masuk ke Dasbor Utama"]:::page
     
     %% Alur Publik
-    CheckSession -- "Tidak Ada Sesi (Akses Publik)" --> CekParam{"URL Parameter <br/>GET ?portfolio=... ?"}:::decision
-    CekParam -- "Kosong" --> LandingPage["Render halaman_pendaratan.php"]:::process
-    CekParam -- "Ada Username" --> CekDBPorto[("SELECT profile_data <br/>FROM users")]:::db
-    CekDBPorto --> Portofolio["Render halaman_portofolio.php"]:::process
+    HalamanDepan --> TombolLihatCV{"Membuka Tautan CV <br/>Milik Orang Lain"}:::btn
+    TombolLihatCV -- "Klik Tautan" --> LihatCV["Menampilkan Halaman CV/Portofolio Publik"]:::page
     
-    %% Alur Autentikasi / Login
-    LandingPage --> FormAuth["Submit Form Login (POST)"]:::process
-    FormAuth --> AksiAuth["Panggil aksi_autentikasi.php"]:::process
-    AksiAuth --> CekPass[("Cek password_verify() <br/>di Database")]:::db
-    CekPass -- "Hash Tidak Valid" --> ErrorMSG["Set Alert Error & Redirect"]:::process
-    ErrorMSG --> LandingPage
-    CekPass -- "Valid" --> SetSession["Set $_SESSION['uid'] <br/> Update last_login"]:::process
-    SetSession --> RedirectDasbor["Redirect ke ?page=beranda"]:::process
-    RedirectDasbor --> FrontController
+    %% Alur Login / Daftar
+    HalamanDepan --> TombolMasuk{"Klik Tombol <br/>'Masuk' atau 'Daftar'"}:::btn
+    TombolMasuk --> IsiForm["Mengisi Email & Kata Sandi"]:::process
+    IsiForm --> CekData["Sistem Memeriksa Kecocokan Akun"]:::process
     
-    %% Alur Dasbor
-    CheckSession -- "Sesi Valid (Login Aktif)" --> RoutingDasbor{"Routing Berdasarkan <br/>$_GET['page']"}:::decision
-    RoutingDasbor -- "page=beranda" --> Dasbor["Dasbor Pusat beranda.php"]:::process
-    RoutingDasbor -- "page=drive" --> Workspace["Workspace Drive pengelola_file.php"]:::process
-    RoutingDasbor -- "page=cv" --> CVBuilder["Pembuat CV pembuat_cv.php"]:::process
+    CekData -- "Kata Sandi Salah" --> PesanGagal["Menampilkan Peringatan Merah"]:::page
+    PesanGagal --> TombolMasuk
     
-    %% Animasi Efek Cahaya / Energy Flow
+    CekData -- "Berhasil" --> Dasbor
+    
+    %% Alur Interaksi Dasbor
+    Dasbor --> PilihanDasbor{"Menu Dasbor Utama"}:::btn
+    PilihanDasbor -- "Klik 'Drive Storage'" --> KeDrive["Membuka Halaman Pengelola File (Drive)"]:::page
+    PilihanDasbor -- "Klik 'Buat CV'" --> KeCV["Membuka Halaman Pembuat CV"]:::page
+    PilihanDasbor -- "Klik 'Keluar'" --> Logout["Sistem Mengeluarkan Akun"]:::process
+    Logout --> HalamanDepan
+
     linkStyle default stroke:#00e5ff,stroke-width:2px,stroke-dasharray: 5 5,animation: dash 1s linear infinite;
 ```
 
-### 2. Alur Pengelola File (Cloud Storage Workspace)
-Ini adalah anatomi lengkap manajemen file, meliputi keamanan, unggahan (*upload*), limitasi kuota, hingga eksekusi asinkron menggunakan *AJAX Vanilla*.
+### 2. Alur Pengelola File (Drive Storage Pribadi)
+Memetakan seluruh fitur dan tombol yang ada di dalam menu Workspace/Drive, mulai dari mengunggah file hingga menghapus file.
 
 ```mermaid
 flowchart TD
-    %% Define Styles
-    classDef client fill:#0f172a,stroke:#0ea5e9,stroke-width:2px,color:#fff;
-    classDef ajax fill:#1e293b,stroke:#eab308,stroke-width:2px,color:#fff;
-    classDef backend fill:#1e1b4b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
-    classDef db fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981,shape:cylinder;
-    classDef decision fill:#334155,stroke:#ef4444,stroke-width:2px,color:#fff,shape:diamond;
+    classDef page fill:#0f172a,stroke:#0ea5e9,stroke-width:2px,color:#fff;
+    classDef btn fill:#1e293b,stroke:#eab308,stroke-width:2px,color:#fff,shape:diamond;
+    classDef process fill:#1e1b4b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
+    classDef finish fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981;
 
-    Client(["💻 User Action: Upload File / Drag Drop"]):::client --> UI["Workspace UI pengelola_file.php"]:::client
-    UI --> AppJS["JavaScript app.js <br/>(Event Listener)"]:::ajax
-    AppJS --> AjaxPost["AJAX POST: Kirim FormData <br/>+ CSRF Token"]:::ajax
+    Drive(["📂 Berada di Halaman Drive / Workspace"]):::page --> TombolDrive{"Pilih Aksi / Tombol"}:::btn
     
-    AjaxPost --> RouteBackend["Routing di index.php"]:::backend
-    RouteBackend --> ModulAksi["Panggil aksi_file.php"]:::backend
+    %% Alur Upload File
+    TombolDrive -- "Klik Tombol 'Unggah File'" --> PilihFile["Memilih File dari Komputer"]:::process
+    PilihFile --> CekPenyimpanan["Sistem Mengecek Sisa Ruang Penyimpanan"]:::process
     
-    ModulAksi --> CekStorage{"Validasi Kapasitas <br/>(Cek Total Size vs Limit)"}:::decision
-    CekStorage -- "Overlimit" --> ResErr1["Response JSON 400 <br/>(Storage Penuh)"]:::ajax
+    CekPenyimpanan -- "Penyimpanan Penuh" --> GagalUpload["Pesan Gagal: 'Ruang Tidak Cukup'"]:::page
+    CekPenyimpanan -- "Sisa Ruang Cukup" --> CekBahaya["Sistem Mengecek Apakah File Berbahaya (Virus)"]:::process
     
-    CekStorage -- "Aman" --> CekEkstensi{"Validasi Ekstensi <br/>(.exe / .php ditolak)"}:::decision
-    CekEkstensi -- "Ilegal" --> ResErr2["Response JSON 400 <br/>(File Dilarang)"]:::ajax
+    CekBahaya -- "File Terlarang" --> GagalUpload
+    CekBahaya -- "File Aman" --> SimpanFile["File Berhasil Disimpan ke Server"]:::finish
+    SimpanFile --> TampilBaru["Muncul Otomatis di Daftar File (Selesai)"]:::page
     
-    CekEkstensi -- "Legal" --> MoveFile["Eksekusi move_uploaded_file()"]:::backend
-    MoveFile --> HDD[("Simpan Fisik ke <br/>/unggahan")]:::db
+    %% Alur Buat Folder
+    TombolDrive -- "Klik Tombol 'Buat Folder'" --> KetikFolder["Mengetik Nama Folder Baru"]:::process
+    KetikFolder --> BuatFolder["Folder Baru Berhasil Dibuat"]:::finish
+    BuatFolder --> TampilBaru
     
-    HDD --> DBInsert[("INSERT INTO tabel_file <br/>size, path, mime_type")]:::db
-    DBInsert --> ResOk["Response JSON 200 <br/>(Upload Sukses)"]:::ajax
-    
-    ResErr1 & ResErr2 --> ToastFail(["Tampilkan Toast Gagal"]):::client
-    ResOk --> ToastOk(["Tampilkan Toast Sukses"]):::client
-    ToastOk --> ReloadUI["Render Ulang Grid/List AJAX"]:::client
-    
-    %% Animasi Efek Cahaya / Energy Flow
+    %% Alur Klik Kanan
+    TombolDrive -- "Klik Kanan pada File" --> MenuKonteks{"Menu Pilihan File"}:::btn
+    MenuKonteks -- "Klik 'Ganti Nama'" --> Rename["Ubah Teks Nama File"]:::process --> TampilBaru
+    MenuKonteks -- "Klik 'Bagikan'" --> Share["Membuat Tautan (Link) Rahasia"]:::finish --> Salin["Pengguna Menyalin Tautan"]:::page
+    MenuKonteks -- "Klik 'Hapus'" --> KonfirmasiHapus{"Apakah Anda Yakin?"}:::btn
+    KonfirmasiHapus -- "Ya, Hapus" --> Terhapus["File Dihapus Permanen"]:::finish --> TampilBaru
+
     linkStyle default stroke:#facc15,stroke-width:2px,stroke-dasharray: 6 4,animation: dash 0.8s linear infinite;
 ```
 
-### 3. Alur Pembuat CV, Data JSON, & Direktori Portofolio Publik
-Alur ini sangat unik karena data tidak disimpan di banyak tabel berbeda, melainkan menggunakan satu payload JSON yang sangat masif dan fleksibel.
+### 3. Alur Pembuat CV Digital & Portofolio (CV Builder)
+Memetakan perjalanan dari mengisi data pribadi yang kosong hingga menghasilkan halaman CV profesional yang siap dibagikan ke perusahaan.
 
 ```mermaid
-flowchart LR
-    %% Define Styles
-    classDef client fill:#0f172a,stroke:#ec4899,stroke-width:2px,color:#fff;
-    classDef process fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
-    classDef db fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981,shape:cylinder;
-    classDef public fill:#022c22,stroke:#14b8a6,stroke-width:2px,color:#fff;
+flowchart TD
+    classDef page fill:#0f172a,stroke:#ec4899,stroke-width:2px,color:#fff;
+    classDef btn fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#fff,shape:diamond;
+    classDef process fill:#1e1b4b,stroke:#f59e0b,stroke-width:2px,color:#fff;
+    classDef finish fill:#022c22,stroke:#14b8a6,stroke-width:2px,color:#fff;
 
-    subgraph Sisi_Klien ["1. Panel Pengguna (CV Builder)"]
-        direction TB
-        Form(["Akses pembuat_cv.php"]):::client --> Input1["Isi Identitas & Profil"]:::client
-        Input1 --> Input2["Tambah Entri Pendidikan"]:::client
-        Input2 --> Input3["Tambah Entri Keahlian"]:::client
-        Input3 --> PayloadJS["JavaScript Melakukan Stringify <br/>ke Format JSON"]:::process
-        PayloadJS --> AjaxPush["AJAX PUT / POST Request"]:::process
-    end
+    HalamanCV(["📝 Berada di Halaman Pembuat CV"]):::page --> FormProfil["Mengisi Nama, Deskripsi Diri, & Kontak"]:::process
+    
+    FormProfil --> AksiKeahlian{"Tombol 'Tambah Keahlian'"}:::btn
+    AksiKeahlian -- "Klik Tambah" --> IsiSkill["Mengetik Keahlian (Contoh: Desain Grafis)"]:::process
+    
+    FormProfil --> AksiPendidikan{"Tombol 'Tambah Pendidikan'"}:::btn
+    AksiPendidikan -- "Klik Tambah" --> IsiSekolah["Mengisi Nama Sekolah & Tahun Lulus"]:::process
+    
+    FormProfil --> AksiPengalaman{"Tombol 'Tambah Pengalaman'"}:::btn
+    AksiPengalaman -- "Klik Tambah" --> IsiKerja["Mengisi Riwayat Pekerjaan Sebelumnya"]:::process
+    
+    IsiSkill & IsiSekolah & IsiKerja --> TombolSimpan{"Klik Tombol 'Simpan Profil'"}:::btn
+    
+    TombolSimpan -- "Sedang Menyimpan..." --> KemasData["Sistem Menyusun Semua Data Menjadi Satu Paket"]:::process
+    KemasData --> SimpanSelesai["Data Sukses Tersimpan di Server"]:::finish
+    
+    SimpanSelesai --> TampilTombolLihat{"Tombol 'Lihat Portofolio Saya' Muncul"}:::btn
+    TampilTombolLihat -- "Klik Lihat" --> BukaCV["Membuka Halaman Desain CV Profesional"]:::finish
+    
+    BukaCV --> Bagikan["Tautan Halaman CV Siap Dibagikan ke Perusahaan / Klien (Selesai)"]:::page
 
-    subgraph Server_DB ["2. Proses Pembaruan di Server"]
-        direction TB
-        AjaxPush --> AksiProfil["aksi_profil.php"]:::process
-        AksiProfil --> ValidasiXSS["Sanitasi & Bersihkan Tag HTML"]:::process
-        ValidasiXSS --> UpdateDB[("UPDATE users <br/>SET profile_data = JSON <br/>WHERE id = sesi_user")]:::db
-    end
-
-    subgraph Akses_Publik ["3. Tampilan Hasil Akhir (Recruiter)"]
-        direction TB
-        KlienLuar(["URL Klien Luar <br/>?portfolio=nama"]):::public --> Index("index.php"):::public
-        Index --> Query[("SELECT profile_data <br/>Berdasarkan URL")]:::db
-        Query --> ParsePHP["PHP json_decode()"]:::process
-        ParsePHP --> RenderCV["Generate HTML CV Profesional"]:::public
-        RenderCV --> ShowCV(["🎉 Tampilan CV Selesai"]):::public
-    end
-
-    %% Animasi Efek Cahaya / Energy Flow
     linkStyle default stroke:#ec4899,stroke-width:2px,stroke-dasharray: 4 6,animation: dash 1.2s linear infinite;
 ```
 
