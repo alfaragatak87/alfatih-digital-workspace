@@ -146,47 +146,59 @@ flowchart TD
 
 ## 📂 Struktur Direktori Tingkat Lanjut
 
-Proyek ini dibangun berdasarkan prinsip *Separation of Concerns* (Pemisahan Tanggung Jawab) antara sisi antarmuka (*Front-end View*), logika pemrosesan (*Backend Action*), dan *routing* utama (*Controller*). Berikut adalah rincian lengkap struktur direktori tanpa masalah penjajaran spasi:
+Proyek ini telah direstrukturisasi total menggunakan prinsip *Separation of Concerns* dengan sistem penomoran modular yang sangat rapi dari `00` hingga `09`. Berikut adalah rincian lengkap struktur direktori terbaru:
 
 ```text
 hosting/
 │
-├── [Sistem Utama]
-│   ├── index.php                  - Front Controller: Mengatur 100% routing, sesi login, dan HTTP requests.
-│   ├── manifest.json              - Web App Manifest: Konfigurasi nama, ikon, dan tema saat diinstall (PWA).
-│   └── sw.js                      - Service Worker: Bertugas melakukan caching file agar web bisa offline (PWA).
+├─ 00_sistem_inti/         - Logika Inti: Koneksi database, router global, dan fungsi pembantu.
+│   ├─ 1_koneksi_database.php - File ini adalah pondasi paling dasar dari sistem Alfatih Workspace.     ...
+│   ├─ 2_pengaturan_keamanan.php - File komponen aplikasi.
+│   ├─ 3_fungsi_pembantu.php - Berisi kumpulan fungsi-fungsi utilitas (pembantu) yang dapat dipanggil  ...
 │
-├── aksi/                          - Direktori Backend (Memproses data & Query ke MySQL)
-│   ├── aksi_autentikasi.php       - Menangani proses Login, Registrasi, Logout, dan Hash Password.
-│   ├── aksi_file.php              - Menangani CRUD file Workspace (Upload, Rename, Hapus, Pindah).
-│   ├── aksi_pengguna.php          - [God Mode] Menangani operasi Admin untuk menghapus/edit akun lain.
-│   └── aksi_profil.php            - Menangkap input Form CV Builder dan mengubahnya menjadi Payload JSON.
+├─ 01_autentikasi/         - Modul Autentikasi: Menangani Login, Registrasi, Logout.
+│   ├─ 1_proses_cek_login.php - File ini bertanggung jawab penuh untuk menangani proses autentikasi.    ...
 │
-├── aset/                          - Direktori Front-end (Resource Statis UI)
-│   ├── css/
-│   │   └── style.css              - Styling utama selain framework, mengatur Glassmorphism & Dark Mode.
-│   ├── js/
-│   │   └── app.js                 - Skrip AJAX (Vanilla JS) untuk asinkronisasi Drive & Drag-n-Drop.
-│   └── images/                    - Menyimpan ikon web, logo SVG, dan placeholder gambar.
+├─ 02_dasbor_utama/        - Modul Dasbor: Layout utama aplikasi, sidebar, navbar, dan beranda dasbor.
+│   ├─ 1_pengaturan_sesi.php - File ini bertugas mengonfigurasi data pengguna yang sedang login.       ...
+│   ├─ 2_tampilan_dasbor.php - File ini berisi kerangka dasar HTML untuk seluruh halaman Dasbor (Worksp...
+│   ├─ 3_tampilan_beranda.php - File komponen aplikasi.
+│   ├─ 4_komponen_modal.php - File komponen aplikasi.
 │
-├── tampilan/                      - Direktori View (Antarmuka Pengguna HTML/PHP)
-│   ├── dasbor/                    - Modul Internal (Hanya bisa diakses setelah Login)
-│   │   ├── beranda.php            - Dasbor Pusat: Menampilkan statistik, kuota, & shortcut.
-│   │   ├── pembuat_cv.php         - CV Builder: Form dinamis untuk membuat Portofolio (Pendidikan, Keahlian).
-│   │   ├── pengelola_file.php     - Google Drive Clone: Antarmuka cloud storage, grid/list view.
-│   │   └── pengelola_pengguna.php - God Mode Panel: Antarmuka khusus Superadmin mengelola pengguna.
-│   │
-│   ├── halaman/                   - Modul Publik (Bisa diakses siapa saja)
-│   │   ├── halaman_pendaratan.php - Landing Page: Pintu depan pemasaran dan perkenalan platform.
-│   │   └── halaman_portofolio.php - Public Showcase: Hasil akhir CV pengguna yang ditampilkan indah ke klien.
-│   │
-│   └── komponen/                  - Modul Parsial (Potongan UI yang dipanggil berulang-ulang)
-│       ├── navbar.php             - Navigasi Atas (Top-bar), breadcrumbs, profile dropdown.
-│       ├── sidebar.php            - Menu Samping, Navigasi modul (Dashboard, Workspace, dll).
-│       └── modal.php              - Kumpulan jendela popup (Modal) untuk notifikasi/konfirmasi.
+├─ 03_pengelola_drive/     - Modul Workspace: Logika dan UI untuk pengelola file ala Google Drive.
+│   ├─ 1_proses_aksi_file.php - Pusat pengolahan (Backend Action Handler) untuk operasi manipulasi data....
+│   ├─ 2_pengaturan_workspace.php - File ini menangani konfigurasi tata letak dan pengurutan data di halaman...
+│   ├─ 3_tampilan_workspace.php - File komponen aplikasi.
 │
-├── unggahan/                      - [Directory Server] Penyimpanan fisik untuk semua file & foto pengguna.
-└── README.md                      - Dokumentasi Utama Proyek (File ini).
+├─ 04_pembuat_cv/          - Modul Builder: Form dinamis untuk membuat CV dan profil profesional.
+│   ├─ 1_tampilan_cv_builder.php - Menampilkan antarmuka formulir (form) super lengkap untuk menyusun CV.  ...
+│   ├─ 2_proses_aksi_profil.php - Skrip pemrosesan latar belakang (Backend Action) untuk menangkap, mengur...
+│
+├─ 05_panel_superadmin/    - Modul God Mode: Antarmuka khusus admin untuk mengelola pengguna lain.
+│   ├─ 1_tampilan_pengguna.php - Menampilkan antarmuka manajemen pengguna untuk Superadmin.              ...
+│   ├─ 2_proses_aksi_pengguna.php - Menangani proses manipulasi data pengguna yang dikirimkan oleh Superadmi...
+│
+├─ 06_halaman_publik/      - Modul Publik: Landing page dan halaman portofolio untuk dilihat pengunjung.
+│   ├─ 1_tampilan_cv_publik.php - File ini berfungsi sebagai pintu gerbang untuk pengunjung luar (publik) ...
+│   ├─ 2_tampilan_portofolio.php - Menampilkan halaman portofolio publik pengguna.                         ...
+│
+├─ 07_aset_visual/         - Resource Statis: File CSS, JavaScript, dan logo/gambar bawaan web.
+│
+├─ 08_unggahan/            - Direktori Server: Penyimpanan fisik untuk semua file & foto profil pengguna.
+│
+├─ 09_proyek_klien/        - Folder Khusus: Ruang penyimpanan terisolasi untuk proyek web pesanan klien.
+│
+├─ 10_konfigurasi_lama/    - Arsip file konfigurasi dari versi sebelumnya.
+│   ├─ database.php         - File komponen aplikasi.
+│
+├─ 11_inti_lama/           - Arsip file fungsi inti dari versi sebelumnya.
+│   ├─ auth.php             - File komponen aplikasi.
+│   ├─ helpers.php          - File komponen aplikasi.
+│
+├─ index.php                - Front Controller: Pintu gerbang utama yang merangkai semua modul di atas.
+├─ manifest.json            - Web App Manifest: Konfigurasi PWA (Progressive Web App).
+├─ sw.js                    - Service Worker: Caching engine untuk performa offline.
+└─ README.md                - Dokumentasi Utama Proyek (File ini).
 ```
 
 ---

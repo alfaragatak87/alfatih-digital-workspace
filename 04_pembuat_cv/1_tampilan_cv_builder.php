@@ -1,4 +1,12 @@
-<?php if (!defined('SITE_URL')) exit; 
+<?php
+// +------------------------------------------------------------------------------+
+// |  FILE: 04_pembuat_cv/1_tampilan_cv_builder.php                               |
+// |                                                                              |
+// |  DESKRIPSI:                                                                  |
+// |  Menampilkan antarmuka formulir (form) super lengkap untuk menyusun CV.      |
+// |                                                                              |
+// +------------------------------------------------------------------------------+
+if (!defined('SITE_URL')) exit; 
 
 // +------------------------------------------------------------------------------+
 // ¦  FILE: tampilan/dasbor/pembuat_cv.php                                        ¦

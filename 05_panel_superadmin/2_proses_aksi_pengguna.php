@@ -1,4 +1,19 @@
 <?php
+// +------------------------------------------------------------------------------+
+// |  FILE: 05_panel_superadmin/2_proses_aksi_pengguna.php                        |
+// |                                                                              |
+// |  DESKRIPSI:                                                                  |
+// |  Menangani proses manipulasi data pengguna yang dikirimkan oleh Superadmin.  |
+// |  Fungsinya mencakup penambahan (Add), pengubahan (Edit), dan penghapusan     |
+// |  (Delete) pengguna serta mengatur tingkat perannya (Role).                   |
+// |                                                                              |
+// |  KONEKSI & RELASI:                                                           |
+// |  - File ini adalah modul cadangan/terpisah dari aksi di 2_proses_aksi_file.  |
+// |  - Terhubung langsung ke tabel 'users' di database.                          |
+// |                                                                              |
+// |  BARIS KODE PENTING:                                                         |
+// |  - password_hash() : Mengenkripsi password baru sebelum masuk ke database.   |
+// +------------------------------------------------------------------------------+
 
 // +------------------------------------------------------------------------------+
 // ¦  FILE: aksi/aksi_pengguna.php                                                ¦

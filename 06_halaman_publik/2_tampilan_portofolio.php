@@ -1,4 +1,12 @@
-<?php if (!defined('SITE_URL')) exit; // Proteksi akses langsung
+<?php
+// +------------------------------------------------------------------------------+
+// |  FILE: 06_halaman_publik/2_tampilan_portofolio.php                           |
+// |                                                                              |
+// |  DESKRIPSI:                                                                  |
+// |  Menampilkan halaman portofolio publik pengguna.                             |
+// |                                                                              |
+// +------------------------------------------------------------------------------+
+if (!defined('SITE_URL')) exit; // Proteksi akses langsung
 
 // +------------------------------------------------------------------------------+
 // ¦  FILE: tampilan/halaman/halaman_portofolio.php                               ¦

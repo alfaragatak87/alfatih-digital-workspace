@@ -1,21 +1,9 @@
 <?php
-// +------------------------------------------------------------------------------+
-// �  FILE: tampilan/komponen/modal.php                                           �
-// �                                                                              �
-// �  DESKRIPSI:                                                                  �
-// �  Gudang seluruh kotak dialog (Pop-up/Modal) tersembunyi yang akan muncul     �
-// �  hanya ketika pengguna memicu aksi tertentu (seperti Tambah Folder, Upload,  �
-// �  Konfirmasi Hapus, dsb).                                                     �
-// �                                                                              �
-// �  KONEKSI & RELASI:                                                           �
-// �  - Komponen ini ditempelkan di bagian paling bawah antarmuka web.            �
-// �  - Diaktifkan/dikendalikan mutlak melalui JavaScript (set/js/app.js).     �
-// �                                                                              �
-// �  BARIS KODE PENTING:                                                         �
-// �  - Setiap Modal ID : Atribut krusial sebagai penanda (identifier) agar JS    �
-// �    tahu pop-up mana yang harus ditampilkan ke layar.                         �
-// +------------------------------------------------------------------------------+
+// Diekstrak dari 2_tampilan_dasbor.php
 ?>
+     ALL MODALS
+ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+
 <!-- ADD FOLDER MODAL -->
 <div id="addFolderModal" class="modal">
   <div class="modal-content">
@@ -25,16 +13,16 @@
     </div>
     <form method="POST" enctype="multipart/form-data">
       <input type="hidden" name="action" value="add_folder">
-      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
-      <?php if(isset($active_folder) && $active_folder) echo "<input type='hidden' name='parent_id' value='{$active_folder}'>"; ?>
+      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+      <?php if($active_folder) echo "<input type='hidden' name='parent_id' value='{$active_folder}'>"; ?>
       <label>Nama Folder</label>
       <input type="text" name="nama_folder" placeholder="cth: Dokumen Proyek" required>
       <label>Deskripsi <span style="font-weight:400;color:var(--text-muted);">(opsional)</span></label>
       <input type="text" name="deskripsi" placeholder="Catatan singkat tentang folder ini">
-      <?php if(isSuperAdmin() || isAdmin()){ ?>
+      <?php if(isAdmin()){ ?>
       <label>Pemilik</label>
       <select name="owner_username">
-        <?php foreach($all_users as $u) echo "<option value='".h($u['username'])."'".($u['username']===($username??'')?' selected':'').">".h($u['nama_lengkap']??$u['username'])." (@".h($u['username']).")</option>"; ?>
+        <?php foreach($all_users as $u) echo "<option value='".h($u['username'])."'".($u['username']===$username?' selected':'').">".h($u['nama_lengkap']??$u['username'])." (@".h($u['username']).")</option>"; ?>
       </select>
       <?php } ?>
       <button type="submit" class="btn-submit-modal"><i class="fa-solid fa-folder-plus"></i> Buat Folder</button>
@@ -51,7 +39,7 @@
     </div>
     <form method="POST">
       <input type="hidden" name="action" value="edit_folder">
-      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
+      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
       <input type="hidden" name="folder_id" id="edit_folder_id">
       <label>Nama Folder</label>
       <input type="text" name="nama_folder" id="edit_folder_nama" required>
@@ -75,8 +63,8 @@
     </div>
     <form method="POST" enctype="multipart/form-data" id="addItemForm">
       <input type="hidden" name="action" value="add_item">
-      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
-      <input type="hidden" name="folder_id" value="<?= (int)($active_folder ?? 0) ?>">
+      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+      <input type="hidden" name="folder_id" value="<?= (int)$active_folder ?>">
       <input type="hidden" name="jenis" id="jenis_input" value="file">
       <div style="display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border-dark);">
         <button type="button" id="tabFile" onclick="switchType('file')" style="flex:1;padding:10px;font-size:.75rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;border:none;background:var(--text-main);color:#fff;font-family:'Inter',sans-serif;"><i class="fa-solid fa-file-arrow-up"></i> Upload File</button>
@@ -89,6 +77,7 @@
           <p>Klik atau drag &amp; drop file ke sini</p>
           <input type="file" id="modal_file_input" name="file_upload[]" multiple>
         </div>
+        <input type="file" id="modal_folder_input" name="file_upload[]" webkitdirectory directory multiple style="display:none;" onchange="document.getElementById('addItemForm').submit()">
         <div id="selectedFilesList"></div>
         <label>Label / Tag <span style="font-weight:400;color:var(--text-muted);">(opsional)</span></label>
         <input type="text" name="tags" placeholder="cth: penting, laporan, 2024">
@@ -115,7 +104,7 @@
     </div>
     <form method="POST" id="moveForm">
       <input type="hidden" name="action" value="move_item">
-      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
+      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
       <input type="hidden" name="move_type" id="move_type_input">
       <input type="hidden" name="move_id" id="move_id_input">
       <p id="move_item_name" style="font-size:.88rem;font-weight:600;color:var(--text-muted);margin-bottom:16px;padding:12px;background:#f9f9f9;border:1px solid var(--border);"></p>
@@ -138,7 +127,7 @@
     </div>
     <form method="POST" id="bulkMoveForm">
       <input type="hidden" name="action" value="bulk_move">
-      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
+      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
       <input type="hidden" name="ids" id="bulkMoveIds">
       <input type="hidden" name="types" id="bulkMoveTypes">
       <input type="hidden" name="target_folder" id="bulkMoveTarget">
@@ -161,14 +150,14 @@
     </div>
     <form method="POST" enctype="multipart/form-data">
       <input type="hidden" name="action" value="update_settings">
-      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
+      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
       <label>Foto Profil</label>
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:4px;">
-        <img src="<?= h($path_foto ?? '') ?>" style="width:56px;height:56px;object-fit:cover;filter:grayscale(100%);border:1px solid var(--border-dark);" alt="Foto Profil">
+        <img src="<?= h($path_foto) ?>" style="width:56px;height:56px;object-fit:cover;filter:grayscale(100%);border:1px solid var(--border-dark);" alt="Foto Profil">
         <input type="file" name="foto_profil" accept="image/*" style="font-size:.82rem;">
       </div>
       <label>Nama Lengkap</label>
-      <input type="text" name="nama_lengkap" value="<?= h($nama_lengkap ?? '') ?>" required>
+      <input type="text" name="nama_lengkap" value="<?= h($nama_lengkap) ?>" required>
       <label>Password Baru <span style="font-weight:400;color:var(--text-muted);">(kosongkan jika tidak ingin ganti)</span></label>
       <input type="password" name="new_password" placeholder="Minimal 8 karakter" autocomplete="new-password">
       <button type="submit" class="btn-submit-modal"><i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan</button>
@@ -186,7 +175,7 @@
     </div>
     <form method="POST">
       <input type="hidden" name="action" value="add_user">
-      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
+      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
       <label>Username</label>
       <input type="text" name="new_username" placeholder="Username unik" required>
       <label>Nama Lengkap</label>
@@ -213,7 +202,7 @@
     </div>
     <form method="POST">
       <input type="hidden" name="action" value="edit_user">
-      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
+      <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
       <input type="hidden" name="edit_uid" id="eu_id">
       <label>Username</label>
       <input type="text" id="eu_username" disabled style="color:var(--text-muted);">
@@ -233,66 +222,31 @@
 </div>
 <?php } ?>
 
-<!-- PREVIEW OVERLAY -->
-<div class="preview-overlay" id="previewOverlay">
-    <div class="preview-header">
-        <div class="preview-filename"><i class="fa-solid fa-file"></i> <span id="previewFileName">File</span></div>
-        <div class="preview-actions">
-            <a href="#" id="previewDownloadBtn"><i class="fa-solid fa-download"></i> Download</a>
-            <a href="#" id="previewOpenBtn" target="_blank"><i class="fa-regular fa-eye"></i> Buka Tab Baru</a>
-            <button onclick="closePreview()"><i class="fa-solid fa-xmark"></i> Tutup</button>
-        </div>
-    </div>
-    <div class="preview-body" id="previewBody"></div>
-</div>
-
-<!-- CONFIRM DIALOG -->
-<div class="confirm-overlay" id="confirmOverlay">
-    <div class="confirm-box">
-        <div class="confirm-icon" id="confirmIcon">&#9888;&#65039;</div>
-        <h3 id="confirmTitle">Konfirmasi</h3>
-        <p id="confirmMessage">Apakah Anda yakin?</p>
-        <div class="confirm-btns">
-            <button class="confirm-cancel" onclick="closeConfirm()">Batal</button>
-            <button class="confirm-danger" id="confirmActionBtn" onclick="executeConfirmAction()">Konfirmasi</button>
-        </div>
-    </div>
-</div>
-
-<!-- DROP OVERLAY -->
-<div class="global-drop-overlay" id="globalDropOverlay">
-    <div style="text-align:center;">
-        <i class="fa-solid fa-cloud-arrow-up" style="font-size:5rem;margin-bottom:20px;display:block;animation:bounce 2s infinite;"></i>
-        <div class="drop-pill">Lepaskan untuk mengunggah<?php if(isset($active_folder) && $active_folder) echo ' ke folder ini';?></div>
-    </div>
-</div>
-
-<!-- TOAST -->
-<div id="toast"></div>
-
 <!-- HIDDEN FORMS for bulk operations and rename -->
 <form id="bulkDeleteForm" method="POST" style="display:none;">
   <input type="hidden" name="action" value="bulk_delete">
-  <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
+  <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
   <input type="hidden" name="ids" id="bulkDeleteIds">
   <input type="hidden" name="types" id="bulkDeleteTypes">
 </form>
 <form id="deleteUserForm" method="POST" style="display:none;">
   <input type="hidden" name="action" value="delete_user">
-  <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
+  <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
   <input type="hidden" name="del_uid" id="del_uid_input">
 </form>
 <form id="renameForm" method="POST" style="display:none;">
   <input type="hidden" name="action" value="rename_item">
-  <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
+  <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
   <input type="hidden" name="item_id" id="renameItemId">
   <input type="hidden" name="item_type" id="renameItemType">
   <input type="hidden" name="new_name" id="renameNewName">
 </form>
 <form id="autoUploadForm" method="POST" enctype="multipart/form-data" style="display:none;">
   <input type="hidden" name="action" value="add_item">
-  <input type="hidden" name="csrf_token" value="<?= $csrf_token ?? '' ?>">
-  <input type="hidden" name="folder_id" value="<?= (int)($active_folder ?? 0) ?>">
+  <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+  <input type="hidden" name="folder_id" value="<?= (int)$active_folder ?>">
   <input type="hidden" name="jenis" value="file">
   <input type="file" id="autoFileInput" name="file_upload[]" multiple>
 </form>
+
+<!-- âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ

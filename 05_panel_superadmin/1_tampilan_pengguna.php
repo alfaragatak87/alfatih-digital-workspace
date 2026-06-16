@@ -1,4 +1,12 @@
-<?php if (!defined('SITE_URL')) exit; 
+<?php
+// +------------------------------------------------------------------------------+
+// |  FILE: 05_panel_superadmin/1_tampilan_pengguna.php                           |
+// |                                                                              |
+// |  DESKRIPSI:                                                                  |
+// |  Menampilkan antarmuka manajemen pengguna untuk Superadmin.                  |
+// |                                                                              |
+// +------------------------------------------------------------------------------+
+if (!defined('SITE_URL')) exit; 
 
 // +------------------------------------------------------------------------------+
 // ¦  FILE: tampilan/dasbor/pengelola_pengguna.php                                ¦
