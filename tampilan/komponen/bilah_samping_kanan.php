@@ -1,3 +1,20 @@
+<?php
+// +------------------------------------------------------------------------------+
+// ¦  FILE: tampilan/komponen/bilah_samping_kanan.php                             ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  Panel informasi samping kanan yang menampilkan limit kuota penyimpanan      ¦
+// ¦  (Storage Bar) beserta visualisasi ringkas profil login saat ini.            ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Bergantung pada kalkulasi ukuran byte ($size_used, $storage_pct)      ¦
+// ¦    yang diproses di awal file index.php.                                   ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - <div class="storage-fill" style="width:<?=  ?>%;"> : Bar    ¦
+// ¦    persentase penyimpanan yang menyesuaikan ruang fisik file aktual.         ¦
+// +------------------------------------------------------------------------------+
+?>
 <div class="right-sidebar" id="rightSidebar">
     <div class="rs-header">
         <h3 id="rs_title"><i class="fa-solid fa-circle-info"></i> Detail Item</h3>

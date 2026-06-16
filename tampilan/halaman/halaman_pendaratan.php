@@ -1,4 +1,21 @@
 <?php if (!defined('SITE_URL')) exit; // Proteksi akses langsung ?>
+
+// +------------------------------------------------------------------------------+
+// ¦  FILE: tampilan/halaman/halaman_pendaratan.php                               ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  Halaman publik pertama (Landing Page) yang dilihat oleh pengunjung web.     ¦
+// ¦  Menampilkan daya tarik aplikasi (fitur-fitur) dan panel untuk Login.        ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Di-render otomatis oleh fungsi enderPublicPage() di dalam index.php  ¦
+// ¦    apabila belum ada sesi login ($_SESSION['username'] kosong).            ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - <style> : Kode gaya CSS *Inline* yang canggih (Glassmorphism & Animasi).¦
+// ¦  - <form action="index.php" method="POST"> : Menangkap input kredensial    ¦
+// ¦    untuk dikirim ke sistem validasi.                                         ¦
+// +------------------------------------------------------------------------------+
 <!DOCTYPE html>
 <html lang="id">
 <head>

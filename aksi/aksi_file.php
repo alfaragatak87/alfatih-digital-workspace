@@ -1,4 +1,19 @@
 <?php
+
+// +------------------------------------------------------------------------------+
+// ¦  FILE: aksi/aksi_file.php                                                    ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  Skrip backend khusus pemrosesan data file. Melakukan manipulasi logika      ¦
+// ¦  tambahan yang spesifik pada sistem unggah dan unduh dokumen.                ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Menjadi pelengkap fungsionalitas bagi index.php.                        ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - Logika manipulasi path fisik : Memastikan penulisan ke folder unggahan/ ¦
+// ¦    dilakukan dengan aman.                                                    ¦
+// +------------------------------------------------------------------------------+
 // ============================================================
 // ALFATIH DIGITAL WORKSPACE â€” aksi/aksi_file.php
 // Fokus: Semua operasi file & folder.

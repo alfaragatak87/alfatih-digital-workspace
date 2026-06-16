@@ -1,4 +1,21 @@
 <?php if (!defined('SITE_URL')) exit; 
+
+// +------------------------------------------------------------------------------+
+// ¦  FILE: tampilan/dasbor/pengelola_pengguna.php                                ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  Panel eksklusif untuk tingkat Superadmin. Digunakan untuk mendaftarkan akun ¦
+// ¦  baru, mengubah password pengguna lain, dan mengatur Role (Peran).           ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Di-include oleh index.php pada rute page=manajemen-pengguna.          ¦
+// ¦  - Hanya bisa diakses jika fungsi isSuperAdmin() bernilai TRUE.            ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - Tabel List Users : Mengambil data dari variabel global $all_users.      ¦
+// ¦  - Tombol Aksi : Terhubung langsung ke Form Modals yang diatur untuk         ¦
+// ¦    menembak endpoint aksi dd_user, edit_user, atau delete_user.       ¦
+// +------------------------------------------------------------------------------+
 if (!isSuperAdmin()) {
     echo "<div class='empty-state' style='cursor:default;'><i class='fa-solid fa-lock'></i><h3>Akses Ditolak</h3><p>Hanya untuk Super Admin.</p></div>";
     return;

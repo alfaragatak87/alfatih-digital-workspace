@@ -1,3 +1,21 @@
+<?php
+// +------------------------------------------------------------------------------+
+// ¦  FILE: tampilan/komponen/navigasi_atas.php                                   ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  Komponen navigasi horizontal pada layar dasbor (Navbar). Berfungsi untuk    ¦
+// ¦  menampilkan bilah pecarian global, breadcrumbs (jejak remah roti navigasi   ¦
+// ¦  folder), dan avatar foto profil sudut kanan atas.                           ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Menerima variabel data $breadcrumbs dari index.php untuk merender     ¦
+// ¦    kedalaman direktori saat ini.                                             ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - Algoritma Breadcrumbs : Melakukan iterasi mundur untuk mencetak urutan    ¦
+// ¦    folder dari akar (root) menuju titik direktori paling dalam.              ¦
+// +------------------------------------------------------------------------------+
+?>
 <div class="top-navbar">
     <div class="header-left">
         <button class="btn-icon btn-menu" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>

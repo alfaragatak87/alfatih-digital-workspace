@@ -1,4 +1,23 @@
 <?php
+
+// +------------------------------------------------------------------------------+
+// ¦  FILE: index.php                                                             ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  File utama (Front Controller) yang mengatur seluruh alur lalu lintas web.   ¦
+// ¦  Berfungsi sebagai pintu gerbang (router) untuk menerima permintaan HTTP     ¦
+// ¦  (GET/POST), memverifikasi sesi login, mengeksekusi operasi database, dan    ¦
+// ¦  memanggil file tampilan yang sesuai.                                        ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Memanggil seluruh file di dalam 	ampilan/ untuk merender antarmuka.     ¦
+// ¦  - Memanggil file di dalam ksi/ jika ada pemrosesan data spesifik.        ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - Konfigurasi DB (Baris 10-14): Parameter koneksi ke MySQL.                 ¦
+// ¦  -  Handlers (Baris 230+): Memproses aksi seperti buat folder/file.    ¦
+// ¦  - renderPublicPage() (Baris 450+): Fungsi perender untuk halaman publik.    ¦
+// +------------------------------------------------------------------------------+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);

@@ -1,5 +1,23 @@
 <?php if (!defined('SITE_URL')) exit; // Proteksi akses langsung ?>
 
+// +------------------------------------------------------------------------------+
+// ¦  FILE: tampilan/dasbor/beranda.php                                           ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  Halaman Dasbor Utama (Overview) untuk pengguna yang berhasil masuk (Login). ¦
+// ¦  Menampilkan sapaan dinamis berdasarkan waktu, widget ringkasan jumlah       ¦
+// ¦  file/folder/penyimpanan, serta tabel riwayat aktivitas terbaru.             ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Di-render (di-include) oleh index.php saat variabel page = 'beranda'. ¦
+// ¦  - Variabel statistik diambil langsung dari logika di index.php.           ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - $greeting : Logika PHP penentuan sapaan Pagi/Siang/Sore/Malam.          ¦
+// ¦  - oreach() : Melakukan iterasi untuk mencetak tabel      ¦
+// ¦    aktivitas (login, upload, hapus) lengkap dengan log alamat IP.            ¦
+// +------------------------------------------------------------------------------+
+
 <?php
 $hour = (int)date('G');
 $greeting = $hour < 12 ? 'Selamat Pagi' : ($hour < 17 ? 'Selamat Siang' : ($hour < 20 ? 'Selamat Sore' : 'Selamat Malam'));

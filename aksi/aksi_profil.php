@@ -1,4 +1,20 @@
 <?php
+
+// +------------------------------------------------------------------------------+
+// ¦  FILE: aksi/aksi_profil.php                                                  ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  Skrip pemrosesan latar belakang (Backend Action) untuk menangkap, mengurai, ¦
+// ¦  dan mengubah seluruh data CV form panjang pengguna ke dalam struktur JSON.  ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Menerima *payload* dari 	ampilan/dasbor/pembuat_cv.php.                 ¦
+// ¦  - Diinklusi oleh index.php melalui trigger action save_profile_data.    ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - json_encode() : Mengonversi struktur *array* multidimensi PHP ¦
+// ¦    menjadi string murni yang aman dimasukkan ke dalam database SQL.          ¦
+// +------------------------------------------------------------------------------+
 // ============================================================
 // ALFATIH DIGITAL WORKSPACE â€” aksi/aksi_profil.php
 // Fokus: Menyimpan data form CV Builder & pengaturan profil.

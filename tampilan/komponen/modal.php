@@ -1,3 +1,21 @@
+<?php
+// +------------------------------------------------------------------------------+
+// ¦  FILE: tampilan/komponen/modal.php                                           ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  Gudang seluruh kotak dialog (Pop-up/Modal) tersembunyi yang akan muncul     ¦
+// ¦  hanya ketika pengguna memicu aksi tertentu (seperti Tambah Folder, Upload,  ¦
+// ¦  Konfirmasi Hapus, dsb).                                                     ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Komponen ini ditempelkan di bagian paling bawah antarmuka web.            ¦
+// ¦  - Diaktifkan/dikendalikan mutlak melalui JavaScript (set/js/app.js).     ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - Setiap Modal ID : Atribut krusial sebagai penanda (identifier) agar JS    ¦
+// ¦    tahu pop-up mana yang harus ditampilkan ke layar.                         ¦
+// +------------------------------------------------------------------------------+
+?>
 <!-- ADD FOLDER MODAL -->
 <div id="addFolderModal" class="modal">
   <div class="modal-content">

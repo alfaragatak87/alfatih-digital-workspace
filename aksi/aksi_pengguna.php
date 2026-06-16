@@ -1,4 +1,21 @@
 <?php
+
+// +------------------------------------------------------------------------------+
+// ¦  FILE: aksi/aksi_pengguna.php                                                ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  Skrip aksi terpisah untuk manajemen tingkat *Admin*. Bertanggung jawab atas ¦
+// ¦  logika bisnis *Role Based Access Control* (RBAC), pendelegasian wewenang,   ¦
+// ¦  dan kontrol penghapusan data massal pengguna.                               ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Bekerja sama erat dengan tabel users MySQL.                             ¦
+// ¦  - Dijalankan lewat *requests* dari pengelola_pengguna.php.                ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - Pencegahan Penghapusan Diri Sendiri : Logika khusus yang menolak aksi     ¦
+// ¦    hapus paksa jika admin mencoba menghapus ID-nya sendiri.                  ¦
+// +------------------------------------------------------------------------------+
 // ============================================================
 // ALFATIH DIGITAL WORKSPACE â€” aksi/aksi_pengguna.php
 // Fokus: Manajemen User oleh SuperAdmin.

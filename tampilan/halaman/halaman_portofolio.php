@@ -1,5 +1,21 @@
 <?php if (!defined('SITE_URL')) exit; // Proteksi akses langsung
 
+// +------------------------------------------------------------------------------+
+// ¦  FILE: tampilan/halaman/halaman_portofolio.php                               ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  Halaman Portofolio Publik yang mempresentasikan data profil user ke dalam   ¦
+// ¦  bentuk Resume online siap-bagikan. Tersedia tombol Cetak/Unduh PDF.         ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Di-trigger lewat URL index.php?portfolio=username.                      ¦
+// ¦  - Mengurai (Decode) string JSON dari kolom profile_data database.         ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - $pd = json_decode(['profile_data'], true) : Logika krusial untuk  ¦
+// ¦    mengubah JSON string mentah menjadi struktur array multi-dimensi.         ¦
+// +------------------------------------------------------------------------------+
+
 $ident  = $pd['identitas'] ?? [];
 $edu    = $pd['pendidikan'] ?? [];
 $exp    = $pd['pengalaman'] ?? [];

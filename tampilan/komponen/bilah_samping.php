@@ -1,3 +1,19 @@
+<?php
+// +------------------------------------------------------------------------------+
+// ¦  FILE: tampilan/komponen/bilah_samping.php                                   ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  Komponen antarmuka (UI Component) untuk navigasi vertikal di sisi kiri      ¦
+// ¦  dasbor. Berisi logo aplikasi dan tautan utama ke menu navigasi.             ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Di-include di seluruh halaman dalam Dasbor (kecuali landing page).        ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - Tag <a> Navigasi : Menggunakan logika class ctive secara dinamis     ¦
+// ¦    berdasarkan variabel $current_page agar menu yang diklik menyala.       ¦
+// +------------------------------------------------------------------------------+
+?>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 <div class="sidebar" id="sidebar">
     <div class="sidebar-section">

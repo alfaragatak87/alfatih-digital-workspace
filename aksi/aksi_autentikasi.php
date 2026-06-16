@@ -1,4 +1,19 @@
 <?php
+
+// +------------------------------------------------------------------------------+
+// ¦  FILE: aksi/aksi_autentikasi.php                                             ¦
+// ¦                                                                              ¦
+// ¦  DESKRIPSI:                                                                  ¦
+// ¦  File ini menangani proses validasi khusus atau perluasan metode login/logout¦
+// ¦  (contohnya: Two Factor Auth, JWT generator) yang dapat dikembangkan nanti.  ¦
+// ¦                                                                              ¦
+// ¦  KONEKSI & RELASI:                                                           ¦
+// ¦  - Berkaitan dengan sistem Sesi (Session) di index.php.                    ¦
+// ¦                                                                              ¦
+// ¦  BARIS KODE PENTING:                                                         ¦
+// ¦  - Verifikasi Kredensial Lanjut : Fungsi-fungsi pendukung *Single Sign On*   ¦
+// ¦    bila diaktifkan di masa mendatang.                                        ¦
+// +------------------------------------------------------------------------------+
 // ============================================================
 // ALFATIH DIGITAL WORKSPACE â€” aksi/aksi_autentikasi.php
 // Fokus: Logika autentikasi â€” form login & logout.
