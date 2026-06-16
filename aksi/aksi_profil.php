@@ -1,6 +1,6 @@
 <?php
 // ============================================================
-// ALFATIH DIGITAL WORKSPACE — actions/profile_action.php
+// ALFATIH DIGITAL WORKSPACE — aksi/aksi_profil.php
 // Fokus: Menyimpan data form CV Builder & pengaturan profil.
 // Mencakup:
 //   POST action=update_settings  — ubah nama, password, foto profil

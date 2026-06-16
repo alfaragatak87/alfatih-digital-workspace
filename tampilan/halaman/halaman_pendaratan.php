@@ -7,8 +7,8 @@
     <meta name="theme-color" content="#0a0a0a">
     <meta name="application-name" content="Alfatih Workspace">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="assets/images/LOGO_GAWE.svg">
-    <link rel="icon" type="image/svg+xml" href="assets/images/LOGO_GAWE.svg">
+    <link rel="apple-touch-icon" href="aset/images/LOGO_GAWE.svg">
+    <link rel="icon" type="image/svg+xml" href="aset/images/LOGO_GAWE.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -102,7 +102,7 @@
 <body>
 <nav class="pub-nav">
     <div class="pub-nav-logo">
-        <img src="assets/images/LOGO_GAWE.svg" alt="Logo" onerror="this.style.display='none'">
+        <img src="aset/images/LOGO_GAWE.svg" alt="Logo" onerror="this.style.display='none'">
         <span>GAWE.MY.ID</span>
     </div>
     <div class="pub-nav-links">

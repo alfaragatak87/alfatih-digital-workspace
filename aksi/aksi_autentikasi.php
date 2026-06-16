@@ -1,6 +1,6 @@
 <?php
 // ============================================================
-// ALFATIH DIGITAL WORKSPACE — actions/auth_action.php
+// ALFATIH DIGITAL WORKSPACE — aksi/aksi_autentikasi.php
 // Fokus: Logika autentikasi — form login & logout.
 // Dipanggil oleh: index.php (sebelum cek session)
 // Requires: config/database.php, core/auth.php

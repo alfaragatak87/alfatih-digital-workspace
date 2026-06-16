@@ -4,10 +4,10 @@ const CACHE_NAME = 'alfatih-ws-v5.0';
 const urlsToCache = [
     './',
     './index.php',
-    './assets/css/dashboard.css',
-    './assets/css/portfolio.css',
-    './assets/js/app.js',
-    './assets/images/LOGO_GAWE.svg'
+    './aset/css/dashboard.css',
+    './aset/css/portfolio.css',
+    './aset/js/app.js',
+    './aset/images/LOGO_GAWE.svg'
 ];
 
 // ── 1. INSTALL SERVICE WORKER ──

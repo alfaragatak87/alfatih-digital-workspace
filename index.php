@@ -88,7 +88,7 @@ function requireLogin(): void { if (empty($_SESSION['username'])) { header("Loca
 $csrf_token = generateCSRF();
 
 // ══════════════════════════════════════════════════════════════
-// BINARY ACTION HANDLERS
+// PENANGANAN AKSI BINER (UNDUH, CETAK, PORTFOLIO)
 // ══════════════════════════════════════════════════════════════
 if (isset($_GET['action']) && $_GET['action'] === 'track_document' && isset($_GET['q'])) {
     $stmt = $mysqli->prepare("SELECT id, nama_file, jenis, tanggal_upload, tags FROM files WHERE is_deleted=0 AND (tags LIKE ? OR nama_file LIKE ?) ORDER BY tanggal_upload DESC LIMIT 10");
@@ -111,7 +111,7 @@ if (isset($_GET['portfolio'])) {
     if (!$puser) { die("Portfolio tidak ditemukan."); }
     $pd = json_decode($puser['profile_data'] ?? '{}', true) ?? [];
     $pFoto = !empty($puser['foto_profil']) && $puser['foto_profil'] !== 'default.png' ? PROFILE_IMG_DIR . $puser['foto_profil'] : 'https://ui-avatars.com/api/?name=' . urlencode($puser['nama_lengkap'] ?? $uname) . '&background=1a1a1a&color=ffffff&bold=true&size=200';
-    include "views/pages/portfolio_page.php"; exit;
+    include "tampilan/halaman/halaman_portofolio.php"; exit;
 }
 if (isset($_GET['logout'])) { session_destroy(); header("Location: index.php"); exit; }
 if (isset($_GET['action']) && in_array($_GET['action'],['download_file','view_file','print_file']) && isset($_GET['file_id']) && !empty($_SESSION['username'])) {
@@ -170,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['ac
     $stmt->execute(); $stmt->close(); header('Content-Type: application/json'); echo json_encode(['ok'=>true]); exit;
 }
 
-// LOGIN
+// =========================================`n// BLOK: PENANGANAN AUTENTIKASI (LOGIN)`n// Fungsi: Memverifikasi nama pengguna dan kata sandi untuk masuk ke dasbor`n// =========================================
 $error_msg = '';
 if ($_SERVER['REQUEST_METHOD']==='POST' && ($_POST['action'] ?? '')==='login') {
     $uname = trim($_POST['username'] ?? ''); $upass = $_POST['password'] ?? '';
@@ -187,14 +187,14 @@ if ($_SERVER['REQUEST_METHOD']==='POST' && ($_POST['action'] ?? '')==='login') {
     } else { $error_msg = "Username atau password salah."; }
 }
 
-// PUBLIC PORTAL
+// =========================================`n// BLOK: PORTAL PUBLIK (BELUM LOGIN)`n// Fungsi: Menampilkan halaman utama bagi pengunjung yang belum masuk`n// =========================================
 if (empty($_SESSION['username'])) {
     $pub_page = $_GET['page'] ?? 'hub';
     renderPublicPage($pub_page, $error_msg, $mysqli);
     exit;
 }
 
-// AUTHENTICATED SETUP
+// =========================================`n// BLOK: PENGATURAN PENGGUNA TERAUTENTIKASI`n// Fungsi: Memuat data profil, status folder, dan batas penyimpanan`n// =========================================
 $username    = $_SESSION['username'];
 $role        = $_SESSION['role'];
 $uid         = (int)($_SESSION['uid'] ?? 0);
@@ -230,7 +230,7 @@ if (isAdmin()) {
     while ($u = $res->fetch_assoc()) $all_users[] = $u;
 }
 
-// POST HANDLERS
+// =========================================`n// BLOK: PENANGANAN FORM (POST)`n// Fungsi: Menyimpan data folder, file, pembaruan profil, dan aksi pengguna`n// =========================================
 if ($_SERVER['REQUEST_METHOD']==='POST' && !empty($_POST['action'])) {
     if ($_POST['action'] !== 'login' && !validateCSRF()) {
         $alert_msg = "Sesi keamanan tidak valid. Muat ulang halaman.";
@@ -364,12 +364,12 @@ if ($_SERVER['REQUEST_METHOD']==='POST' && !empty($_POST['action'])) {
             if ($du_id !== $uid) { $stmt = $mysqli->prepare("DELETE FROM users WHERE id=?"); $stmt->bind_param('i', $du_id); $stmt->execute(); $stmt->close(); $alert_msg = "User berhasil dihapus."; }
         }
         if ($act === 'save_profile_data') {
-            include "actions/profile_action.php";
+            include "aksi/aksi_profil.php";
         }
     }
 }
 
-// TRASH GET ACTIONS
+// =========================================`n// BLOK: PENANGANAN TONG SAMPAH (GET)`n// Fungsi: Mengembalikan atau menghapus secara permanen file/folder`n// =========================================
 if (isset($_GET['action'])) {
     $gact = $_GET['action'];
     if ($gact === 'soft_delete_folder' && isset($_GET['id'])) {
@@ -407,7 +407,7 @@ if (isset($_GET['action'])) {
     }
 }
 
-// WORKSPACE SETUP
+// =========================================`n// BLOK: PENGATURAN RUANG KERJA (WORKSPACE)`n// Fungsi: Menyiapkan variabel penyortiran, pencarian, dan rekam jejak aktivitas`n// =========================================
 $search_query = trim($_GET['q'] ?? ''); $current_view = $_GET['view'] ?? 'home';
 $active_folder = isset($_GET['folder_id']) ? (int)$_GET['folder_id'] : null;
 $admin_filter = $_GET['filter'] ?? $username; $sort = $_GET['sort'] ?? 'nama_asc';
@@ -449,7 +449,7 @@ $display_name  = !empty($profile_data['identitas']['nama_sebutan'])
 
 
 // ══════════════════════════════════════════════════════════════
-// PUBLIC PAGE RENDER FUNCTION
+// FUNGSI PENAMPIL HALAMAN PUBLIK (LANDING PAGE & LOGIN)
 // ══════════════════════════════════════════════════════════════
 function renderPublicPage(string $pub_page, string $error_msg, mysqli $db): void {
     $talent_users = [];
@@ -467,8 +467,8 @@ function renderPublicPage(string $pub_page, string $error_msg, mysqli $db): void
     <meta name="theme-color" content="#080b14">
     <meta name="description" content="Alfatih Digital Workspace — Premium CMS, File Manager & Portfolio Builder.">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="assets/images/LOGO_GAWE.svg">
-    <link rel="apple-touch-icon" href="assets/images/LOGO_GAWE.svg">
+    <link rel="icon" type="image/svg+xml" href="aset/images/LOGO_GAWE.svg">
+    <link rel="apple-touch-icon" href="aset/images/LOGO_GAWE.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -1137,7 +1137,7 @@ body::before{
   <div class="gate-panel"></div>
 </div>
 <div class="gate-logo">
-  <img src="assets/images/LOGO_GAWE.svg" alt="Logo" onerror="this.src='LOGO_GAWE.svg'">
+  <img src="aset/images/LOGO_GAWE.svg" alt="Logo" onerror="this.src='LOGO_GAWE.svg'">
 </div>
 
 <!-- AMBIENT ORBS -->
@@ -1150,7 +1150,7 @@ body::before{
 <!-- NAVBAR -->
 <nav class="pub-nav">
   <div class="pub-nav-logo">
-    <img src="assets/images/LOGO_GAWE.svg" alt="Logo" onerror="this.style.display='none'">
+    <img src="aset/images/LOGO_GAWE.svg" alt="Logo" onerror="this.style.display='none'">
     <span>GAWE.MY.ID</span>
   </div>
   <div class="pub-nav-links">
@@ -1180,7 +1180,7 @@ body::before{
   <div class="login-right">
     <a href="index.php" class="login-right-back"><i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda</a>
     <div class="login-brand">
-      <img src="assets/images/LOGO_GAWE.svg" alt="Logo" onerror="this.style.display='none'">
+      <img src="aset/images/LOGO_GAWE.svg" alt="Logo" onerror="this.style.display='none'">
     </div>
     <h1 class="login-title">Masuk ke Workspace</h1>
     <p class="login-sub">Masukkan kredensial akun Anda untuk melanjutkan.</p>
@@ -1309,7 +1309,7 @@ body::before{
 
 <footer class="pub-footer">
   <div class="pub-footer-brand">
-    <img src="assets/images/LOGO_GAWE.svg" alt="Logo" onerror="this.style.display='none'">
+    <img src="aset/images/LOGO_GAWE.svg" alt="Logo" onerror="this.style.display='none'">
     <span>GAWE.MY.ID &mdash; Alfatih Digital Workspace</span>
   </div>
   <div class="pub-footer-links">
@@ -1319,7 +1319,7 @@ body::before{
 </footer>
 
 <script>
-// Login form handler with loading + ripple
+// =========================================`n// BLOK: PENANGANAN AUTENTIKASI (LOGIN)`n// Fungsi: Memverifikasi nama pengguna dan kata sandi untuk masuk ke dasbor`n// ========================================= form handler with loading + ripple
 function handleLogin(e) {
   const btn = document.getElementById('loginBtn');
   if (btn) {
@@ -1384,8 +1384,8 @@ document.querySelectorAll('.bento-feat, .talent-card').forEach((el, i) => {
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Workspace">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="assets/images/LOGO_GAWE.svg">
-    <link rel="icon" type="image/svg+xml" href="assets/images/LOGO_GAWE.svg">
+    <link rel="apple-touch-icon" href="aset/images/LOGO_GAWE.svg">
+    <link rel="icon" type="image/svg+xml" href="aset/images/LOGO_GAWE.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -3280,7 +3280,7 @@ body { background: #f8fafd; }
     <div class="header-left">
         <button class="btn-icon btn-menu" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
         <div class="logo-mark" onclick="window.location='index.php?page=beranda'" style="cursor:pointer;">
-          <img src="assets/images/LOGO_GAWE.svg" alt="Logo" onerror="this.style.display='none'">
+          <img src="aset/images/LOGO_GAWE.svg" alt="Logo" onerror="this.style.display='none'">
           <span>WORKSPACE</span>
         </div>
         <?php if(isSuperAdmin()){?><span class="sa-badge"><i class="fa-solid fa-crown" style="margin-right:3px;font-size:.8em;"></i>God Mode</span><?php }?>
@@ -3708,10 +3708,10 @@ if($ws_view==='stats'){
 <?php
 // ══════════════ PAGE: PROFILE ══════════════
 }elseif($current_page==='profile'){
-    include "views/dashboard/cv_builder.php";
+    include "tampilan/dasbor/pembuat_cv.php";
     // ══════════════ PAGE: MANAJEMEN PENGGUNA ══════════════
 }elseif($current_page==='manajemen-pengguna'){
-    include "views/dashboard/user_manager.php";
+    include "tampilan/dasbor/pengelola_pengguna.php";
 }// end page routing
 ?>
     </div><!-- end content-area -->
@@ -4734,6 +4734,6 @@ if ('serviceWorker' in navigator) {
   const CSRF = '<?= h($csrf_token) ?>';
   const CURRENT_USERNAME = '<?= h($username) ?>';
 </script>
-<script src="assets/js/context_menu.js"></script>
+<script src="aset/js/context_menu.js"></script>
 </body>
 </html>

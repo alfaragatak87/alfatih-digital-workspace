@@ -1,6 +1,6 @@
 <?php
 // ============================================================
-// ALFATIH DIGITAL WORKSPACE — actions/user_action.php
+// ALFATIH DIGITAL WORKSPACE — aksi/aksi_pengguna.php
 // Fokus: Manajemen User oleh SuperAdmin.
 // Mencakup:
 //   POST action=add_user    — tambah user baru
