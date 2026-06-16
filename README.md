@@ -70,32 +70,32 @@ flowchart TD
     classDef db fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981,shape:cylinder;
     classDef decision fill:#334155,stroke:#f59e0b,stroke-width:2px,color:#f59e0b,shape:diamond;
     
-    Start([🌐 Mulai: Kunjungan Web]):::startEnd --> FrontController[index.php <br/>(Front Controller & Router)]:::process
+    Start(["🌐 Mulai: Kunjungan Web"]):::startEnd --> FrontController["index.php <br/>(Front Controller & Router)"]:::process
     
-    FrontController --> Init[Inisialisasi `require_once` config DB & helper]:::process
-    Init --> CheckSession{Validasi <br/>$_SESSION['user_id']}:::decision
+    FrontController --> Init["Inisialisasi require_once config DB & helper"]:::process
+    Init --> CheckSession{"Validasi <br/>$_SESSION['user_id']"}:::decision
     
     %% Alur Publik
-    CheckSession -- "Tidak Ada Sesi (Akses Publik)" --> CekParam{URL Parameter <br/>GET ?portfolio=... ?}:::decision
-    CekParam -- "Kosong" --> LandingPage[Render `halaman_pendaratan.php`]:::process
-    CekParam -- "Ada Username" --> CekDBPorto[(SELECT profile_data <br/>FROM users)]:::db
-    CekDBPorto --> Portofolio[Render `halaman_portofolio.php`]:::process
+    CheckSession -- "Tidak Ada Sesi (Akses Publik)" --> CekParam{"URL Parameter <br/>GET ?portfolio=... ?"}:::decision
+    CekParam -- "Kosong" --> LandingPage["Render halaman_pendaratan.php"]:::process
+    CekParam -- "Ada Username" --> CekDBPorto[("SELECT profile_data <br/>FROM users")]:::db
+    CekDBPorto --> Portofolio["Render halaman_portofolio.php"]:::process
     
     %% Alur Autentikasi / Login
-    LandingPage --> FormAuth[Submit Form Login (POST)]:::process
-    FormAuth --> AksiAuth[Panggil `aksi_autentikasi.php`]:::process
-    AksiAuth --> CekPass[(Cek `password_verify()` <br/>di Database)]:::db
-    CekPass -- "Hash Tidak Valid" --> ErrorMSG[Set Alert Error & Redirect]:::process
+    LandingPage --> FormAuth["Submit Form Login (POST)"]:::process
+    FormAuth --> AksiAuth["Panggil aksi_autentikasi.php"]:::process
+    AksiAuth --> CekPass[("Cek password_verify() <br/>di Database")]:::db
+    CekPass -- "Hash Tidak Valid" --> ErrorMSG["Set Alert Error & Redirect"]:::process
     ErrorMSG --> LandingPage
-    CekPass -- "Valid" --> SetSession[Set $_SESSION['uid'] <br/> Update last_login]:::process
-    SetSession --> RedirectDasbor[Redirect ke ?page=beranda]:::process
+    CekPass -- "Valid" --> SetSession["Set $_SESSION['uid'] <br/> Update last_login"]:::process
+    SetSession --> RedirectDasbor["Redirect ke ?page=beranda"]:::process
     RedirectDasbor --> FrontController
     
     %% Alur Dasbor
-    CheckSession -- "Sesi Valid (Login Aktif)" --> RoutingDasbor{Routing Berdasarkan <br/>$_GET['page']}:::decision
-    RoutingDasbor -- "page=beranda" --> Dasbor[Dasbor Pusat `beranda.php`]:::process
-    RoutingDasbor -- "page=drive" --> Workspace[Workspace Drive `pengelola_file.php`]:::process
-    RoutingDasbor -- "page=cv" --> CVBuilder[Pembuat CV `pembuat_cv.php`]:::process
+    CheckSession -- "Sesi Valid (Login Aktif)" --> RoutingDasbor{"Routing Berdasarkan <br/>$_GET['page']"}:::decision
+    RoutingDasbor -- "page=beranda" --> Dasbor["Dasbor Pusat beranda.php"]:::process
+    RoutingDasbor -- "page=drive" --> Workspace["Workspace Drive pengelola_file.php"]:::process
+    RoutingDasbor -- "page=cv" --> CVBuilder["Pembuat CV pembuat_cv.php"]:::process
     
     %% Animasi Efek Cahaya / Energy Flow
     linkStyle default stroke:#00e5ff,stroke-width:2px,stroke-dasharray: 5 5,animation: dash 1s linear infinite;
@@ -113,28 +113,28 @@ flowchart TD
     classDef db fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981,shape:cylinder;
     classDef decision fill:#334155,stroke:#ef4444,stroke-width:2px,color:#fff,shape:diamond;
 
-    Client([💻 User Action: Upload File / Drag Drop]):::client --> UI[Workspace UI `pengelola_file.php`]:::client
-    UI --> AppJS[JavaScript `app.js` <br/>(Event Listener)]:::ajax
-    AppJS --> AjaxPost[AJAX POST: Kirim FormData <br/>+ CSRF Token]:::ajax
+    Client(["💻 User Action: Upload File / Drag Drop"]):::client --> UI["Workspace UI pengelola_file.php"]:::client
+    UI --> AppJS["JavaScript app.js <br/>(Event Listener)"]:::ajax
+    AppJS --> AjaxPost["AJAX POST: Kirim FormData <br/>+ CSRF Token"]:::ajax
     
-    AjaxPost --> RouteBackend[Routing di `index.php`]:::backend
-    RouteBackend --> ModulAksi[Panggil `aksi_file.php`]:::backend
+    AjaxPost --> RouteBackend["Routing di index.php"]:::backend
+    RouteBackend --> ModulAksi["Panggil aksi_file.php"]:::backend
     
-    ModulAksi --> CekStorage{Validasi Kapasitas <br/>(Cek Total Size vs Limit)}:::decision
-    CekStorage -- "Overlimit" --> ResErr1[Response JSON 400 <br/>(Storage Penuh)]:::ajax
+    ModulAksi --> CekStorage{"Validasi Kapasitas <br/>(Cek Total Size vs Limit)"}:::decision
+    CekStorage -- "Overlimit" --> ResErr1["Response JSON 400 <br/>(Storage Penuh)"]:::ajax
     
-    CekStorage -- "Aman" --> CekEkstensi{Validasi Ekstensi <br/>(.exe / .php ditolak)}:::decision
-    CekEkstensi -- "Ilegal" --> ResErr2[Response JSON 400 <br/>(File Dilarang)]:::ajax
+    CekStorage -- "Aman" --> CekEkstensi{"Validasi Ekstensi <br/>(.exe / .php ditolak)"}:::decision
+    CekEkstensi -- "Ilegal" --> ResErr2["Response JSON 400 <br/>(File Dilarang)"]:::ajax
     
-    CekEkstensi -- "Legal" --> MoveFile[Eksekusi `move_uploaded_file()`]:::backend
-    MoveFile --> HDD[(Simpan Fisik ke <br/>/unggahan)]:::db
+    CekEkstensi -- "Legal" --> MoveFile["Eksekusi move_uploaded_file()"]:::backend
+    MoveFile --> HDD[("Simpan Fisik ke <br/>/unggahan")]:::db
     
-    HDD --> DBInsert[(INSERT INTO tabel_file <br/>size, path, mime_type)]:::db
-    DBInsert --> ResOk[Response JSON 200 <br/>(Upload Sukses)]:::ajax
+    HDD --> DBInsert[("INSERT INTO tabel_file <br/>size, path, mime_type")]:::db
+    DBInsert --> ResOk["Response JSON 200 <br/>(Upload Sukses)"]:::ajax
     
-    ResErr1 & ResErr2 --> ToastFail([Tampilkan Toast Gagal]):::client
-    ResOk --> ToastOk([Tampilkan Toast Sukses]):::client
-    ToastOk --> ReloadUI[Render Ulang Grid/List AJAX]:::client
+    ResErr1 & ResErr2 --> ToastFail(["Tampilkan Toast Gagal"]):::client
+    ResOk --> ToastOk(["Tampilkan Toast Sukses"]):::client
+    ToastOk --> ReloadUI["Render Ulang Grid/List AJAX"]:::client
     
     %% Animasi Efek Cahaya / Energy Flow
     linkStyle default stroke:#facc15,stroke-width:2px,stroke-dasharray: 6 4,animation: dash 0.8s linear infinite;
@@ -153,27 +153,27 @@ flowchart LR
 
     subgraph Sisi_Klien ["1. Panel Pengguna (CV Builder)"]
         direction TB
-        Form([Akses `pembuat_cv.php`]):::client --> Input1[Isi Identitas & Profil]:::client
-        Input1 --> Input2[Tambah Entri Pendidikan]:::client
-        Input2 --> Input3[Tambah Entri Keahlian]:::client
-        Input3 --> PayloadJS[JavaScript Melakukan Stringify <br/>ke Format JSON]:::process
-        PayloadJS --> AjaxPush[AJAX PUT / POST Request]:::process
+        Form(["Akses pembuat_cv.php"]):::client --> Input1["Isi Identitas & Profil"]:::client
+        Input1 --> Input2["Tambah Entri Pendidikan"]:::client
+        Input2 --> Input3["Tambah Entri Keahlian"]:::client
+        Input3 --> PayloadJS["JavaScript Melakukan Stringify <br/>ke Format JSON"]:::process
+        PayloadJS --> AjaxPush["AJAX PUT / POST Request"]:::process
     end
 
     subgraph Server_DB ["2. Proses Pembaruan di Server"]
         direction TB
-        AjaxPush --> AksiProfil[`aksi_profil.php`]:::process
-        AksiProfil --> ValidasiXSS[Sanitasi & Bersihkan Tag HTML]:::process
-        ValidasiXSS --> UpdateDB[(UPDATE `users` <br/>SET profile_data = JSON <br/>WHERE id = sesi_user)]:::db
+        AjaxPush --> AksiProfil["aksi_profil.php"]:::process
+        AksiProfil --> ValidasiXSS["Sanitasi & Bersihkan Tag HTML"]:::process
+        ValidasiXSS --> UpdateDB[("UPDATE users <br/>SET profile_data = JSON <br/>WHERE id = sesi_user")]:::db
     end
 
     subgraph Akses_Publik ["3. Tampilan Hasil Akhir (Recruiter)"]
         direction TB
-        KlienLuar([URL Klien Luar <br/>`?portfolio=nama`]):::public --> Index(index.php):::public
-        Index --> Query[(SELECT profile_data <br/>Berdasarkan URL)]:::db
-        Query --> ParsePHP[PHP `json_decode()`]:::process
-        ParsePHP --> RenderCV[Generate HTML CV Profesional]:::public
-        RenderCV --> ShowCV([🎉 Tampilan CV Selesai]):::public
+        KlienLuar(["URL Klien Luar <br/>?portfolio=nama"]):::public --> Index("index.php"):::public
+        Index --> Query[("SELECT profile_data <br/>Berdasarkan URL")]:::db
+        Query --> ParsePHP["PHP json_decode()"]:::process
+        ParsePHP --> RenderCV["Generate HTML CV Profesional"]:::public
+        RenderCV --> ShowCV(["🎉 Tampilan CV Selesai"]):::public
     end
 
     %% Animasi Efek Cahaya / Energy Flow
