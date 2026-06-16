@@ -54,142 +54,175 @@ Hak akses tertinggi (*Super Admin*) untuk mengelola ekosistem.
 
 Proyek ini dibangun dengan arsitektur **Monolitik (Front Controller)**, di mana `index.php` bertindak sebagai pintu masuk tunggal (Single Entry Point) yang mengatur seluruh *routing*, keamanan, dan manajemen sesi.
 
-Berikut adalah rincian alur kerja (*flowchart*) untuk setiap fitur utama di platform ini:
+Berikut adalah rincian alur kerja (*flowchart*) untuk setiap fitur utama di platform ini secara komprehensif.
 
-### 1. Alur Autentikasi & Routing Utama
-Alur ini menjelaskan bagaimana sistem membedakan antara pengunjung publik dan pengguna terdaftar, serta bagaimana proses masuk (*login*) divalidasi.
+> [!TIP]
+> Garis putus-putus berwarna terang yang menghubungkan setiap proses merepresentasikan **"Energy Flow" (Alur Cahaya)** perjalanan data secara asinkron dari awal eksekusi (*Client*) hingga akhir (*Server/Database*).
+
+### 1. Alur Autentikasi, Routing Utama, & Front Controller
+Alur ini membedakan secara ketat antara akses **Publik** (tanpa batas akses) dan **Sistem Internal** (harus login). Semua proses bermuara di `index.php`.
 
 ```mermaid
 flowchart TD
-    Start([🌐 Pengguna Mengakses Web]) --> FrontController{index.php <br/>(Front Controller)}
+    %% Define Styles untuk Efek Cahaya / Neon
+    classDef startEnd fill:#0f172a,stroke:#3b82f6,stroke-width:3px,color:#fff,rx:10,ry:10;
+    classDef process fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
+    classDef db fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981,shape:cylinder;
+    classDef decision fill:#334155,stroke:#f59e0b,stroke-width:2px,color:#f59e0b,shape:diamond;
     
-    FrontController --> CheckSession{Cek Sesi <br/>$_SESSION['user_id'] ?}
+    Start([🌐 Mulai: Kunjungan Web]):::startEnd --> FrontController[index.php <br/>(Front Controller & Router)]:::process
+    
+    FrontController --> Init[Inisialisasi `require_once` config DB & helper]:::process
+    Init --> CheckSession{Validasi <br/>$_SESSION['user_id']}:::decision
     
     %% Alur Publik
-    CheckSession -- Sesi Kosong --> RouterPublik[Router: Halaman Publik]
-    RouterPublik --> LandingPage[tampilan/halaman_pendaratan.php]
-    RouterPublik --> CekParam{Ada Parameter <br/>?portfolio= ?}
-    CekParam -- Ya --> Portofolio[tampilan/halaman_portofolio.php]
+    CheckSession -- "Tidak Ada Sesi (Akses Publik)" --> CekParam{URL Parameter <br/>GET ?portfolio=... ?}:::decision
+    CekParam -- "Kosong" --> LandingPage[Render `halaman_pendaratan.php`]:::process
+    CekParam -- "Ada Username" --> CekDBPorto[(SELECT profile_data <br/>FROM users)]:::db
+    CekDBPorto --> Portofolio[Render `halaman_portofolio.php`]:::process
     
-    %% Alur Login
-    LandingPage --> FormAuth[Isi Form Login / Register]
-    FormAuth --> AksiAuth(aksi/aksi_autentikasi.php)
-    AksiAuth --> ValidasiDB[(Query Database <br/>tabel 'users')]
-    ValidasiDB -- Gagal --> LandingPage
-    ValidasiDB -- Sukses --> SetSession[Set Sesi & Redirect]
-    SetSession --> FrontController
+    %% Alur Autentikasi / Login
+    LandingPage --> FormAuth[Submit Form Login (POST)]:::process
+    FormAuth --> AksiAuth[Panggil `aksi_autentikasi.php`]:::process
+    AksiAuth --> CekPass[(Cek `password_verify()` <br/>di Database)]:::db
+    CekPass -- "Hash Tidak Valid" --> ErrorMSG[Set Alert Error & Redirect]:::process
+    ErrorMSG --> LandingPage
+    CekPass -- "Valid" --> SetSession[Set $_SESSION['uid'] <br/> Update last_login]:::process
+    SetSession --> RedirectDasbor[Redirect ke ?page=beranda]:::process
+    RedirectDasbor --> FrontController
     
     %% Alur Dasbor
-    CheckSession -- Sesi Aktif --> RouterDasbor[Router: Halaman Internal]
-    RouterDasbor --> Dasbor[tampilan/dasbor/beranda.php]
+    CheckSession -- "Sesi Valid (Login Aktif)" --> RoutingDasbor{Routing Berdasarkan <br/>$_GET['page']}:::decision
+    RoutingDasbor -- "page=beranda" --> Dasbor[Dasbor Pusat `beranda.php`]:::process
+    RoutingDasbor -- "page=drive" --> Workspace[Workspace Drive `pengelola_file.php`]:::process
+    RoutingDasbor -- "page=cv" --> CVBuilder[Pembuat CV `pembuat_cv.php`]:::process
     
-    Dasbor --> Modul1[Workspace / Drive]
-    Dasbor --> Modul2[Pembuat CV]
-    Dasbor --> Modul3[Pengaturan Admin]
+    %% Animasi Efek Cahaya / Energy Flow
+    linkStyle default stroke:#00e5ff,stroke-width:2px,stroke-dasharray: 5 5,animation: dash 1s linear infinite;
 ```
 
-### 2. Alur Pengelola File (Workspace / Cloud Storage)
-Alur ini mendemonstrasikan proses unggah, manipulasi file, dan perhitungan kuota pada halaman Workspace.
+### 2. Alur Pengelola File (Cloud Storage Workspace)
+Ini adalah anatomi lengkap manajemen file, meliputi keamanan, unggahan (*upload*), limitasi kuota, hingga eksekusi asinkron menggunakan *AJAX Vanilla*.
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor U as Pengguna (User)
-    participant UI as Workspace UI <br/>(pengelola_file.php)
-    participant JS as app.js (AJAX)
-    participant BE as Backend <br/>(aksi_file.php)
-    participant DB as Database & <br/>Local Storage
+flowchart TD
+    %% Define Styles
+    classDef client fill:#0f172a,stroke:#0ea5e9,stroke-width:2px,color:#fff;
+    classDef ajax fill:#1e293b,stroke:#eab308,stroke-width:2px,color:#fff;
+    classDef backend fill:#1e1b4b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
+    classDef db fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981,shape:cylinder;
+    classDef decision fill:#334155,stroke:#ef4444,stroke-width:2px,color:#fff,shape:diamond;
 
-    U->>UI: Klik 'Upload File' / Drag & Drop
-    UI->>JS: Tangkap Event File
-    JS->>BE: Kirim FormData (File + Metadata) via AJAX
+    Client([💻 User Action: Upload File / Drag Drop]):::client --> UI[Workspace UI `pengelola_file.php`]:::client
+    UI --> AppJS[JavaScript `app.js` <br/>(Event Listener)]:::ajax
+    AppJS --> AjaxPost[AJAX POST: Kirim FormData <br/>+ CSRF Token]:::ajax
     
-    rect rgb(30, 30, 30)
-        Note over BE, DB: Validasi Backend
-        BE->>BE: Cek Ekstensi & Ukuran File
-        BE->>DB: Cek Sisa Kuota Pengguna
-    end
+    AjaxPost --> RouteBackend[Routing di `index.php`]:::backend
+    RouteBackend --> ModulAksi[Panggil `aksi_file.php`]:::backend
     
-    alt Kuota Penuh / File Dilarang
-        BE-->>JS: Return JSON Error (400)
-        JS-->>UI: Tampilkan Toast Notifikasi Gagal
-    else Validasi Lolos
-        BE->>DB: Pindahkan File Fisik ke folder /unggahan
-        BE->>DB: Insert Meta Data (Nama, Path, Size) ke DB
-        BE-->>JS: Return JSON Success (200)
-        JS-->>UI: Tampilkan Toast Sukses & Reload Grid
-    end
+    ModulAksi --> CekStorage{Validasi Kapasitas <br/>(Cek Total Size vs Limit)}:::decision
+    CekStorage -- "Overlimit" --> ResErr1[Response JSON 400 <br/>(Storage Penuh)]:::ajax
     
-    UI-->>U: File Muncul di Antarmuka Drive
+    CekStorage -- "Aman" --> CekEkstensi{Validasi Ekstensi <br/>(.exe / .php ditolak)}:::decision
+    CekEkstensi -- "Ilegal" --> ResErr2[Response JSON 400 <br/>(File Dilarang)]:::ajax
+    
+    CekEkstensi -- "Legal" --> MoveFile[Eksekusi `move_uploaded_file()`]:::backend
+    MoveFile --> HDD[(Simpan Fisik ke <br/>/unggahan)]:::db
+    
+    HDD --> DBInsert[(INSERT INTO tabel_file <br/>size, path, mime_type)]:::db
+    DBInsert --> ResOk[Response JSON 200 <br/>(Upload Sukses)]:::ajax
+    
+    ResErr1 & ResErr2 --> ToastFail([Tampilkan Toast Gagal]):::client
+    ResOk --> ToastOk([Tampilkan Toast Sukses]):::client
+    ToastOk --> ReloadUI[Render Ulang Grid/List AJAX]:::client
+    
+    %% Animasi Efek Cahaya / Energy Flow
+    linkStyle default stroke:#facc15,stroke-width:2px,stroke-dasharray: 6 4,animation: dash 0.8s linear infinite;
 ```
 
-### 3. Alur Pembuat CV & Direktori Portofolio
-Alur ini menunjukkan bagaimana input form kompleks diubah menjadi representasi JSON yang dinamis dan ditampilkan ke publik.
+### 3. Alur Pembuat CV, Data JSON, & Direktori Portofolio Publik
+Alur ini sangat unik karena data tidak disimpan di banyak tabel berbeda, melainkan menggunakan satu payload JSON yang sangat masif dan fleksibel.
 
 ```mermaid
 flowchart LR
-    subgraph Sisi Pengguna (Terdaftar)
-        UI_CV[Halaman Pembuat CV <br/>(pembuat_cv.php)] --> Input[Isi Data: Profil, <br/>Pendidikan, Skill]
-        Input --> JS_Payload[JavaScript menyusun <br/>Payload JSON]
-        JS_Payload --> POST_Profil(aksi_profil.php)
+    %% Define Styles
+    classDef client fill:#0f172a,stroke:#ec4899,stroke-width:2px,color:#fff;
+    classDef process fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
+    classDef db fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981,shape:cylinder;
+    classDef public fill:#022c22,stroke:#14b8a6,stroke-width:2px,color:#fff;
+
+    subgraph Sisi_Klien ["1. Panel Pengguna (CV Builder)"]
+        direction TB
+        Form([Akses `pembuat_cv.php`]):::client --> Input1[Isi Identitas & Profil]:::client
+        Input1 --> Input2[Tambah Entri Pendidikan]:::client
+        Input2 --> Input3[Tambah Entri Keahlian]:::client
+        Input3 --> PayloadJS[JavaScript Melakukan Stringify <br/>ke Format JSON]:::process
+        PayloadJS --> AjaxPush[AJAX PUT / POST Request]:::process
     end
-    
-    subgraph Database
-        POST_Profil --> |Update| KolomJSON[(Tabel 'users' <br/>kolom 'profile_data')]
+
+    subgraph Server_DB ["2. Proses Pembaruan di Server"]
+        direction TB
+        AjaxPush --> AksiProfil[`aksi_profil.php`]:::process
+        AksiProfil --> ValidasiXSS[Sanitasi & Bersihkan Tag HTML]:::process
+        ValidasiXSS --> UpdateDB[(UPDATE `users` <br/>SET profile_data = JSON <br/>WHERE id = sesi_user)]:::db
     end
-    
-    subgraph Sisi Publik (Recruiter)
-        ReqPublik([Akses ?portfolio=username]) --> Router(index.php)
-        Router --> QueryDB(Ambil JSON dari DB)
-        QueryDB --> KolomJSON
-        QueryDB --> RenderHTML[tampilan/halaman_portofolio.php]
-        RenderHTML --> TampilCV[Tampilkan Desain CV Profesional]
+
+    subgraph Akses_Publik ["3. Tampilan Hasil Akhir (Recruiter)"]
+        direction TB
+        KlienLuar([URL Klien Luar <br/>`?portfolio=nama`]):::public --> Index(index.php):::public
+        Index --> Query[(SELECT profile_data <br/>Berdasarkan URL)]:::db
+        Query --> ParsePHP[PHP `json_decode()`]:::process
+        ParsePHP --> RenderCV[Generate HTML CV Profesional]:::public
+        RenderCV --> ShowCV([🎉 Tampilan CV Selesai]):::public
     end
+
+    %% Animasi Efek Cahaya / Energy Flow
+    linkStyle default stroke:#ec4899,stroke-width:2px,stroke-dasharray: 4 6,animation: dash 1.2s linear infinite;
 ```
 
 ## 📂 Struktur Direktori Tingkat Lanjut
 
-Proyek ini dibangun berdasarkan prinsip *Separation of Concerns* (Pemisahan Tanggung Jawab) antara sisi antarmuka (*Front-end View*), logika pemrosesan (*Backend Action*), dan *routing* utama (*Controller*). Berikut adalah rincian lengkap struktur direktori:
+Proyek ini dibangun berdasarkan prinsip *Separation of Concerns* (Pemisahan Tanggung Jawab) antara sisi antarmuka (*Front-end View*), logika pemrosesan (*Backend Action*), dan *routing* utama (*Controller*). Berikut adalah rincian lengkap struktur direktori tanpa masalah penjajaran spasi:
 
 ```text
 hosting/
 │
-├── ⚙️ [Sistem Utama]
-│   ├── index.php                  # Front Controller: Mengatur 100% routing, sesi login, dan HTTP requests.
-│   ├── manifest.json              # Web App Manifest: Konfigurasi nama, ikon, dan tema saat diinstall (PWA).
-│   └── sw.js                      # Service Worker: Bertugas melakukan caching file agar web bisa offline (PWA).
+├── [Sistem Utama]
+│   ├── index.php                  - Front Controller: Mengatur 100% routing, sesi login, dan HTTP requests.
+│   ├── manifest.json              - Web App Manifest: Konfigurasi nama, ikon, dan tema saat diinstall (PWA).
+│   └── sw.js                      - Service Worker: Bertugas melakukan caching file agar web bisa offline (PWA).
 │
-├── 📁 aksi/                       # Direktori Backend (Memproses data & Query ke MySQL)
-│   ├── aksi_autentikasi.php       # Menangani proses Login, Registrasi, Logout, dan Hash Password.
-│   ├── aksi_file.php              # Menangani CRUD file Workspace (Upload, Rename, Hapus, Pindah).
-│   ├── aksi_pengguna.php          # [God Mode] Menangani operasi Admin untuk menghapus/edit akun lain.
-│   └── aksi_profil.php            # Menangkap input Form CV Builder dan mengubahnya menjadi Payload JSON.
+├── aksi/                          - Direktori Backend (Memproses data & Query ke MySQL)
+│   ├── aksi_autentikasi.php       - Menangani proses Login, Registrasi, Logout, dan Hash Password.
+│   ├── aksi_file.php              - Menangani CRUD file Workspace (Upload, Rename, Hapus, Pindah).
+│   ├── aksi_pengguna.php          - [God Mode] Menangani operasi Admin untuk menghapus/edit akun lain.
+│   └── aksi_profil.php            - Menangkap input Form CV Builder dan mengubahnya menjadi Payload JSON.
 │
-├── 📁 aset/                       # Direktori Front-end (Resource Statis UI)
+├── aset/                          - Direktori Front-end (Resource Statis UI)
 │   ├── css/
-│   │   └── style.css              # Styling utama selain framework, mengatur Glassmorphism & Dark Mode.
+│   │   └── style.css              - Styling utama selain framework, mengatur Glassmorphism & Dark Mode.
 │   ├── js/
-│   │   └── app.js                 # Skrip AJAX (Vanilla JS) untuk asinkronisasi Drive & Drag-n-Drop.
-│   └── images/                    # Menyimpan ikon web, logo SVG, dan placeholder gambar.
+│   │   └── app.js                 - Skrip AJAX (Vanilla JS) untuk asinkronisasi Drive & Drag-n-Drop.
+│   └── images/                    - Menyimpan ikon web, logo SVG, dan placeholder gambar.
 │
-├── 📁 tampilan/                   # Direktori View (Antarmuka Pengguna HTML/PHP)
-│   ├── 📂 dasbor/                 # Modul Internal (Hanya bisa diakses setelah Login)
-│   │   ├── beranda.php            # Dasbor Pusat: Menampilkan statistik, kuota, & shortcut.
-│   │   ├── pembuat_cv.php         # CV Builder: Form dinamis untuk membuat Portofolio (Pendidikan, Keahlian).
-│   │   ├── pengelola_file.php     # Google Drive Clone: Antarmuka cloud storage, grid/list view, dan context menu.
-│   │   └── pengelola_pengguna.php # God Mode Panel: Antarmuka khusus Superadmin mengelola pengguna.
+├── tampilan/                      - Direktori View (Antarmuka Pengguna HTML/PHP)
+│   ├── dasbor/                    - Modul Internal (Hanya bisa diakses setelah Login)
+│   │   ├── beranda.php            - Dasbor Pusat: Menampilkan statistik, kuota, & shortcut.
+│   │   ├── pembuat_cv.php         - CV Builder: Form dinamis untuk membuat Portofolio (Pendidikan, Keahlian).
+│   │   ├── pengelola_file.php     - Google Drive Clone: Antarmuka cloud storage, grid/list view.
+│   │   └── pengelola_pengguna.php - God Mode Panel: Antarmuka khusus Superadmin mengelola pengguna.
 │   │
-│   ├── 📂 halaman/                # Modul Publik (Bisa diakses siapa saja)
-│   │   ├── halaman_pendaratan.php # Landing Page: Pintu depan pemasaran dan perkenalan platform.
-│   │   └── halaman_portofolio.php # Public Showcase: Hasil akhir CV pengguna yang ditampilkan indah ke klien.
+│   ├── halaman/                   - Modul Publik (Bisa diakses siapa saja)
+│   │   ├── halaman_pendaratan.php - Landing Page: Pintu depan pemasaran dan perkenalan platform.
+│   │   └── halaman_portofolio.php - Public Showcase: Hasil akhir CV pengguna yang ditampilkan indah ke klien.
 │   │
-│   └── 📂 komponen/               # Modul Parsial (Potongan UI yang dipanggil berulang-ulang)
-│       ├── navbar.php             # Navigasi Atas (Top-bar), breadcrumbs, profile dropdown.
-│       ├── sidebar.php            # Menu Samping, Navigasi modul (Dashboard, Workspace, dll).
-│       └── modal.php              # Kumpulan jendela popup (Modal) untuk notifikasi/konfirmasi.
+│   └── komponen/                  - Modul Parsial (Potongan UI yang dipanggil berulang-ulang)
+│       ├── navbar.php             - Navigasi Atas (Top-bar), breadcrumbs, profile dropdown.
+│       ├── sidebar.php            - Menu Samping, Navigasi modul (Dashboard, Workspace, dll).
+│       └── modal.php              - Kumpulan jendela popup (Modal) untuk notifikasi/konfirmasi.
 │
-├── 📁 unggahan/                   # [Directory Server] Penyimpanan fisik untuk semua file & foto pengguna.
-└── 📄 README.md                   # Dokumentasi Utama Proyek (File ini).
+├── unggahan/                      - [Directory Server] Penyimpanan fisik untuk semua file & foto pengguna.
+└── README.md                      - Dokumentasi Utama Proyek (File ini).
 ```
 
 ---
