@@ -52,13 +52,14 @@ Hak akses tertinggi (*Super Admin*) untuk mengelola ekosistem.
 
 ## 🏗️ Peta Perjalanan Pengguna & Fitur Aplikasi (User Journey)
 
-Bagian ini memetakan secara detail setiap tombol yang dapat diklik oleh pengguna, ke mana arahnya, dan apa yang terjadi di balik layar menggunakan bahasa yang mudah dipahami (tanpa bahasa pemrograman rumit).
+Bagian ini memetakan secara keseluruhan **Arsitektur Lengkap (Mega Flowchart)** dari setiap kemungkinan aksi, rute, dan fitur yang bisa dilakukan oleh pengguna di dalam ekosistem Alfatih Digital Workspace.
 
 > [!TIP]
-> Garis putus-putus bercahaya pada bagan di bawah ini merepresentasikan **Alur Perjalanan Pengguna** dari awal menekan tombol hingga fitur selesai diproses.
+> Garis putus-putus bercahaya pada bagan di bawah ini merepresentasikan **Alur Perjalanan Pengguna** dari awal menekan tombol hingga fitur selesai diproses di _database_.
 
-### 1. Alur Masuk (Pintu Gerbang & Akses Utama)
-Memetakan perjalanan pertama kali seseorang mengunjungi website, dari mulai melihat halaman depan, mendaftar, hingga berhasil masuk ke Dasbor.
+### 🗺️ Master Flowchart: Alur Seluruh Fitur Sistem (Kompleksitas Penuh)
+
+Bagan ini menunjukkan percabangan rumit dari `index.php` (sebagai pengatur pusat) ke seluruh fitur aplikasi, termasuk manajemen sesi, hak akses tingkat dewa (*Super Admin*), penyimpanan file, dan pembuat CV dinamis.
 
 ```mermaid
 flowchart TD
@@ -66,107 +67,81 @@ flowchart TD
     classDef startEnd fill:#0f172a,stroke:#3b82f6,stroke-width:3px,color:#fff,rx:10,ry:10;
     classDef page fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
     classDef btn fill:#334155,stroke:#f59e0b,stroke-width:2px,color:#f59e0b,shape:diamond;
-    classDef process fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981;
-
-    Mulai(["🌐 Pengunjung Membuka Website"]):::startEnd --> CekStatus{"Apakah Pengunjung <br/>Sudah Login Sebelumnya?"}:::btn
-    
-    CekStatus -- "Belum" --> HalamanDepan["Berada di Halaman Pendaratan (Depan)"]:::page
-    CekStatus -- "Sudah" --> Dasbor["Langsung Masuk ke Dasbor Utama"]:::page
-    
-    %% Alur Publik
-    HalamanDepan --> TombolLihatCV{"Membuka Tautan CV <br/>Milik Orang Lain"}:::btn
-    TombolLihatCV -- "Klik Tautan" --> LihatCV["Menampilkan Halaman CV/Portofolio Publik"]:::page
-    
-    %% Alur Login / Daftar
-    HalamanDepan --> TombolMasuk{"Klik Tombol <br/>'Masuk' atau 'Daftar'"}:::btn
-    TombolMasuk --> IsiForm["Mengisi Email & Kata Sandi"]:::process
-    IsiForm --> CekData["Sistem Memeriksa Kecocokan Akun"]:::process
-    
-    CekData -- "Kata Sandi Salah" --> PesanGagal["Menampilkan Peringatan Merah"]:::page
-    PesanGagal --> TombolMasuk
-    
-    CekData -- "Berhasil" --> Dasbor
-    
-    %% Alur Interaksi Dasbor
-    Dasbor --> PilihanDasbor{"Menu Dasbor Utama"}:::btn
-    PilihanDasbor -- "Klik 'Drive Storage'" --> KeDrive["Membuka Halaman Pengelola File (Drive)"]:::page
-    PilihanDasbor -- "Klik 'Buat CV'" --> KeCV["Membuka Halaman Pembuat CV"]:::page
-    PilihanDasbor -- "Klik 'Keluar'" --> Logout["Sistem Mengeluarkan Akun"]:::process
-    Logout --> HalamanDepan
-
-    linkStyle default stroke:#00e5ff,stroke-width:2px,stroke-width:2px;
-```
-
-### 2. Alur Pengelola File (Drive Storage Pribadi)
-Memetakan seluruh fitur dan tombol yang ada di dalam menu Workspace/Drive, mulai dari mengunggah file hingga menghapus file.
-
-```mermaid
-flowchart TD
-    classDef page fill:#0f172a,stroke:#0ea5e9,stroke-width:2px,color:#fff;
-    classDef btn fill:#1e293b,stroke:#eab308,stroke-width:2px,color:#fff,shape:diamond;
-    classDef process fill:#1e1b4b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
+    classDef process fill:#1e1b4b,stroke:#ec4899,stroke-width:2px,color:#fff;
     classDef finish fill:#020617,stroke:#10b981,stroke-width:2px,color:#10b981;
+    classDef warning fill:#450a0a,stroke:#ef4444,stroke-width:2px,color:#f87171;
 
-    Drive(["📂 Berada di Halaman Drive / Workspace"]):::page --> TombolDrive{"Pilih Aksi / Tombol"}:::btn
+    Awal(["🌐 Pengunjung Akses Web"]):::startEnd --> CekSesiAwal{"Sistem Mengecek <br/>Session Login"}:::btn
     
-    %% Alur Upload File
-    TombolDrive -- "Klik Tombol 'Unggah File'" --> PilihFile["Memilih File dari Komputer"]:::process
-    PilihFile --> CekPenyimpanan["Sistem Mengecek Sisa Ruang Penyimpanan"]:::process
+    %% ================= JALUR PUBLIK ================= %%
+    CekSesiAwal -- "Belum Login" --> JalurPublik{"Apakah URL memiliki <br/> parameter ?portfolio= ?"}:::btn
+    JalurPublik -- "Ya" --> CekPortfolio["Sistem Mencari Username di Database"]:::process
+    CekPortfolio --> HasilPortfolio{"Data Ditemukan?"}:::btn
+    HasilPortfolio -- "Tidak" --> Error404["Tampilkan Halaman 404 Not Found"]:::warning
+    HasilPortfolio -- "Ya" --> RenderCVPublik["Ubah Data JSON Menjadi HTML Visual"]:::finish
+    RenderCVPublik --> TampilCV(["Halaman CV / Portofolio Publik Ditampilkan"]):::startEnd
     
-    CekPenyimpanan -- "Penyimpanan Penuh" --> GagalUpload["Pesan Gagal: 'Ruang Tidak Cukup'"]:::page
-    CekPenyimpanan -- "Sisa Ruang Cukup" --> CekBahaya["Sistem Mengecek Apakah File Berbahaya (Virus)"]:::process
+    JalurPublik -- "Tidak Ada" --> HalDepan["Menampilkan Halaman Pendaratan (Landing Page)"]:::page
+    HalDepan --> AksiDepan{"Tombol di Halaman Depan"}:::btn
+    AksiDepan -- "Klik Tombol Login" --> FormLogin["Mengisi Email & Password"]:::process
+    FormLogin --> ValidasiLogin{"Sistem Cek Database"}:::btn
+    ValidasiLogin -- "Gagal" --> PesanError["Muncul Notifikasi Merah (Gagal)"]:::warning --> HalDepan
+    ValidasiLogin -- "Berhasil" --> SetSesi["Membuat Sesi Login"]:::process --> MasukDasbor
     
-    CekBahaya -- "File Terlarang" --> GagalUpload
-    CekBahaya -- "File Aman" --> SimpanFile["File Berhasil Disimpan ke Server"]:::finish
-    SimpanFile --> TampilBaru["Muncul Otomatis di Daftar File (Selesai)"]:::page
+    AksiDepan -- "Klik Tombol Daftar" --> FormData["Mengisi Identitas Baru"]:::process
+    FormData --> CekEmail{"Apakah Email <br/>Sudah Terdaftar?"}:::btn
+    CekEmail -- "Sudah" --> PeringatanEmail["Peringatan: Email Telah Digunakan"]:::warning --> HalDepan
+    CekEmail -- "Belum" --> BuatAkun["Akun Dibuat di Database"]:::finish --> SetSesi
     
-    %% Alur Buat Folder
-    TombolDrive -- "Klik Tombol 'Buat Folder'" --> KetikFolder["Mengetik Nama Folder Baru"]:::process
-    KetikFolder --> BuatFolder["Folder Baru Berhasil Dibuat"]:::finish
-    BuatFolder --> TampilBaru
+    %% ================= JALUR DASBOR & SUPER ADMIN ================= %%
+    CekSesiAwal -- "Sudah Login" --> MasukDasbor["Menampilkan Halaman Dasbor Utama"]:::page
+    MasukDasbor --> HakAkses{"Apakah Level Akun <br/>Super Admin?"}:::btn
     
-    %% Alur Klik Kanan
-    TombolDrive -- "Klik Kanan pada File" --> MenuKonteks{"Menu Pilihan File"}:::btn
-    MenuKonteks -- "Klik 'Ganti Nama'" --> Rename["Ubah Teks Nama File"]:::process --> TampilBaru
-    MenuKonteks -- "Klik 'Bagikan'" --> Share["Membuat Tautan (Link) Rahasia"]:::finish --> Salin["Pengguna Menyalin Tautan"]:::page
-    MenuKonteks -- "Klik 'Hapus'" --> KonfirmasiHapus{"Apakah Anda Yakin?"}:::btn
-    KonfirmasiHapus -- "Ya, Hapus" --> Terhapus["File Dihapus Permanen"]:::finish --> TampilBaru
+    HakAkses -- "Ya" --> TampilMenuAdmin["Membuka Akses Menu 'Kelola Pengguna'"]:::page
+    TampilMenuAdmin --> AksiAdmin{"Pilihan Aksi Admin"}:::btn
+    AksiAdmin -- "Klik Edit Pengguna" --> FormEdit["Ubah Nama/Password User Lain"]:::process --> UpdateUser["Data Berhasil Diperbarui"]:::finish
+    AksiAdmin -- "Klik Hapus Pengguna" --> KonfirmasiHapusAkun{"Yakin Ingin Menghapus?"}:::btn
+    KonfirmasiHapusAkun -- "Batal" --> TampilMenuAdmin
+    KonfirmasiHapusAkun -- "Ya" --> EksekusiHapus["Seluruh Data Pengguna & File Terhapus"]:::finish
+    
+    HakAkses -- "Bukan (Admin Biasa)" --> MenuBiasa{"Pilihan Modul Aplikasi"}:::btn
+    
+    %% ================= JALUR PEMBUAT CV ================= %%
+    MenuBiasa -- "Klik Buat CV" --> ModulCV["Membuka Halaman Pembuat CV"]:::page
+    ModulCV --> AksiCV{"Interaksi Formulir CV"}:::btn
+    AksiCV -- "Isi Profil Dasar" --> KetikProfil["Mengetik Nama, Gelar, Deskripsi"]:::process
+    AksiCV -- "Klik Tambah Pendidikan" --> FormEdukasi["Mengisi Sekolah & Tahun Lulus"]:::process
+    AksiCV -- "Klik Tambah Keahlian" --> FormSkill["Menambah Label Keahlian Baru"]:::process
+    KetikProfil & FormEdukasi & FormSkill --> TombolSimpanCV{"Klik 'Simpan Profil'"}:::btn
+    TombolSimpanCV --> CompileJSON["JavaScript Mengonversi Data ke Paket JSON"]:::process
+    CompileJSON --> SimpanKeDB["Menyimpan JSON ke Kolom profile_data"]:::finish
+    SimpanKeDB --> SuksesCV(["Profil CV Berhasil Diperbarui secara Real-time!"]):::startEnd
+    
+    %% ================= JALUR PENGELOLA FILE (DRIVE) ================= %%
+    MenuBiasa -- "Klik Workspace Drive" --> ModulDrive["Membuka Halaman Pengelola File"]:::page
+    ModulDrive --> AksiDrive{"Pilihan Tindakan Drive"}:::btn
+    
+    AksiDrive -- "Klik Buat Folder" --> KetikFolder["Input Nama Folder"]:::process --> FolderBaru["Folder Virtual Dibuat"]:::finish
+    
+    AksiDrive -- "Seret / Upload File" --> CekLimit{"Cek Kapasitas <br/>(Sisa Storage)"}:::btn
+    CekLimit -- "Penuh" --> ToastGagal["Muncul Pesan: Storage Penuh!"]:::warning
+    CekLimit -- "Masih Cukup" --> CekEkstensi{"Apakah Ekstensi Aman? <br/>(Bukan .php/.exe)"}:::btn
+    CekEkstensi -- "Berbahaya" --> ToastBahaya["Pesan: Ekstensi Tidak Diizinkan!"]:::warning
+    CekEkstensi -- "Aman" --> SimpanFisik["File Dipindahkan ke Folder /unggahan"]:::finish
+    SimpanFisik --> InsertMeta["Informasi File Dicatat ke Database"]:::process --> TampilBaru(["Muncul di Antarmuka Drive"]):::startEnd
+    
+    AksiDrive -- "Klik Kanan File" --> KonteksMenu{"Menu Pilihan Tindakan"}:::btn
+    KonteksMenu -- "Ganti Nama" --> InputNamaBaru["Ketik Nama Baru"]:::process --> TersimpanNama["Nama Diperbarui"]:::finish
+    KonteksMenu -- "Buat Tautan (Share)" --> GenerateLink["Membuat URL Rahasia"]:::process --> CopyLink["Tautan Disalin ke Clipboard"]:::finish
+    KonteksMenu -- "Hapus File" --> KonfirmasiDel{"Konfirmasi Hapus"}:::btn
+    KonfirmasiDel -- "Batal" --> ModulDrive
+    KonfirmasiDel -- "Ya" --> DeleteFisik["File Dihapus dari Server & Database"]:::finish
+    
+    %% ================= KELUAR ================= %%
+    MenuBiasa -- "Klik Keluar" --> AksiLogout["Menghapus Sesi (Session Destroy)"]:::process
+    AksiLogout --> HalDepan
 
-    linkStyle default stroke:#facc15,stroke-width:2px,stroke-width:2px;
-```
-
-### 3. Alur Pembuat CV Digital & Portofolio (CV Builder)
-Memetakan perjalanan dari mengisi data pribadi yang kosong hingga menghasilkan halaman CV profesional yang siap dibagikan ke perusahaan.
-
-```mermaid
-flowchart TD
-    classDef page fill:#0f172a,stroke:#ec4899,stroke-width:2px,color:#fff;
-    classDef btn fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#fff,shape:diamond;
-    classDef process fill:#1e1b4b,stroke:#f59e0b,stroke-width:2px,color:#fff;
-    classDef finish fill:#022c22,stroke:#14b8a6,stroke-width:2px,color:#fff;
-
-    HalamanCV(["📝 Berada di Halaman Pembuat CV"]):::page --> FormProfil["Mengisi Nama, Deskripsi Diri, & Kontak"]:::process
-    
-    FormProfil --> AksiKeahlian{"Tombol 'Tambah Keahlian'"}:::btn
-    AksiKeahlian -- "Klik Tambah" --> IsiSkill["Mengetik Keahlian (Contoh: Desain Grafis)"]:::process
-    
-    FormProfil --> AksiPendidikan{"Tombol 'Tambah Pendidikan'"}:::btn
-    AksiPendidikan -- "Klik Tambah" --> IsiSekolah["Mengisi Nama Sekolah & Tahun Lulus"]:::process
-    
-    FormProfil --> AksiPengalaman{"Tombol 'Tambah Pengalaman'"}:::btn
-    AksiPengalaman -- "Klik Tambah" --> IsiKerja["Mengisi Riwayat Pekerjaan Sebelumnya"]:::process
-    
-    IsiSkill & IsiSekolah & IsiKerja --> TombolSimpan{"Klik Tombol 'Simpan Profil'"}:::btn
-    
-    TombolSimpan -- "Sedang Menyimpan..." --> KemasData["Sistem Menyusun Semua Data Menjadi Satu Paket"]:::process
-    KemasData --> SimpanSelesai["Data Sukses Tersimpan di Server"]:::finish
-    
-    SimpanSelesai --> TampilTombolLihat{"Tombol 'Lihat Portofolio Saya' Muncul"}:::btn
-    TampilTombolLihat -- "Klik Lihat" --> BukaCV["Membuka Halaman Desain CV Profesional"]:::finish
-    
-    BukaCV --> Bagikan["Tautan Halaman CV Siap Dibagikan ke Perusahaan / Klien (Selesai)"]:::page
-
-    linkStyle default stroke:#ec4899,stroke-width:2px,stroke-width:2px;
+    linkStyle default stroke-width:2px;
 ```
 
 ## 📂 Struktur Direktori Tingkat Lanjut
