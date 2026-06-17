@@ -33,6 +33,9 @@ define('DB_NAME', 'mckmmukg_utama');
 // Mendefinisikan Konstanta URL Utama Website agar mudah dipanggil di halaman lain
 define('SITE_URL', 'https://gawe.my.id');
 
+// Mendefinisikan Konstanta API Key untuk Google Gemini AI Assistant
+define('GEMINI_API_KEY', 'AIzaSyCUyrpwL6t2jMBQF8rxjATaXtrvmGWtRWk');
+
 // Mendefinisikan Konstanta untuk lokasi folder tempat penyimpanan file pengguna
 define('UPLOAD_DIR', '08_unggahan/files/');
 

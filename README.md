@@ -137,6 +137,16 @@ flowchart TD
     KonfirmasiDel -- "Batal" --> ModulDrive
     KonfirmasiDel -- "Ya" --> DeleteFisik["File Dihapus dari Server & Database"]:::finish
     
+    %% ================= JALUR PRODUKTIVITAS & BISNIS ================= %%
+    MenuBiasa -- "Klik Modul Bisnis" --> ModulBisnis["Membuka Halaman Keuangan / Inventaris"]:::page
+    ModulBisnis --> InputKeuangan["Catat Pemasukan & Pengeluaran"]:::process
+    InputKeuangan --> HitungOtomatis["Sistem Hitung Laba/Rugi"]:::finish
+    MenuBiasa -- "Akses Widget Kalkulator" --> WidgetKalkulator["Kalkulator Mengambang Aktif"]:::page
+    MenuBiasa -- "Akses To-Do List" --> TodoList["Mencatat Tugas Harian"]:::process
+    MenuBiasa -- "Panggil AI Scanner" --> AIKTP["Upload KTP ke Chat AI"]:::process
+    AIKTP --> AIProcessing["Sistem Visi Optik Ekstrak Teks KTP"]:::process
+    AIProcessing --> SimpanWarga["Data Tersimpan ke Tabel Penduduk"]:::finish
+    
     %% ================= KELUAR ================= %%
     MenuBiasa -- "Klik Keluar" --> AksiLogout["Menghapus Sesi (Session Destroy)"]:::process
     AksiLogout --> HalDepan
@@ -148,58 +158,30 @@ flowchart TD
 
 Proyek ini telah direstrukturisasi total menggunakan prinsip *Separation of Concerns* dengan sistem penomoran modular yang sangat rapi dari `00` hingga `09`. Berikut adalah rincian lengkap struktur direktori terbaru:
 
-```text
 hosting/
 │
 ├─ 00_sistem_inti/         - Logika Inti: Koneksi database, router global, dan fungsi pembantu.
-│   ├─ 1_koneksi_database.php - File ini adalah pondasi paling dasar dari sistem Alfatih Workspace.     ...
-│   ├─ 2_pengaturan_keamanan.php - File komponen aplikasi.
-│   ├─ 3_fungsi_pembantu.php - Berisi kumpulan fungsi-fungsi utilitas (pembantu) yang dapat dipanggil  ...
-│
 ├─ 01_autentikasi/         - Modul Autentikasi: Menangani Login, Registrasi, Logout.
-│   ├─ 1_proses_cek_login.php - File ini bertanggung jawab penuh untuk menangani proses autentikasi.    ...
-│
-├─ 02_dasbor_utama/        - Modul Dasbor: Layout utama aplikasi, sidebar, navbar, dan beranda dasbor.
-│   ├─ 1_pengaturan_sesi.php - File ini bertugas mengonfigurasi data pengguna yang sedang login.       ...
-│   ├─ 2_tampilan_dasbor.php - File ini berisi kerangka dasar HTML untuk seluruh halaman Dasbor (Worksp...
-│   ├─ 3_tampilan_beranda.php - File komponen aplikasi.
-│   ├─ 4_komponen_modal.php - File komponen aplikasi.
-│
+├─ 02_dasbor_utama/        - Modul Dasbor: Layout utama aplikasi, sidebar, navbar, widget, dan beranda.
 ├─ 03_pengelola_drive/     - Modul Workspace: Logika dan UI untuk pengelola file ala Google Drive.
-│   ├─ 1_proses_aksi_file.php - Pusat pengolahan (Backend Action Handler) untuk operasi manipulasi data....
-│   ├─ 2_pengaturan_workspace.php - File ini menangani konfigurasi tata letak dan pengurutan data di halaman...
-│   ├─ 3_tampilan_workspace.php - File komponen aplikasi.
-│
 ├─ 04_pembuat_cv/          - Modul Builder: Form dinamis untuk membuat CV dan profil profesional.
-│   ├─ 1_tampilan_cv_builder.php - Menampilkan antarmuka formulir (form) super lengkap untuk menyusun CV.  ...
-│   ├─ 2_proses_aksi_profil.php - Skrip pemrosesan latar belakang (Backend Action) untuk menangkap, mengur...
-│
 ├─ 05_panel_superadmin/    - Modul God Mode: Antarmuka khusus admin untuk mengelola pengguna lain.
-│   ├─ 1_tampilan_pengguna.php - Menampilkan antarmuka manajemen pengguna untuk Superadmin.              ...
-│   ├─ 2_proses_aksi_pengguna.php - Menangani proses manipulasi data pengguna yang dikirimkan oleh Superadmi...
-│
 ├─ 06_halaman_publik/      - Modul Publik: Landing page dan halaman portofolio untuk dilihat pengunjung.
-│   ├─ 1_tampilan_cv_publik.php - File ini berfungsi sebagai pintu gerbang untuk pengunjung luar (publik) ...
-│   ├─ 2_tampilan_portofolio.php - Menampilkan halaman portofolio publik pengguna.                         ...
-│
 ├─ 07_aset_visual/         - Resource Statis: File CSS, JavaScript, dan logo/gambar bawaan web.
-│
 ├─ 08_unggahan/            - Direktori Server: Penyimpanan fisik untuk semua file & foto profil pengguna.
-│
-├─ 09_proyek_klien/        - Folder Khusus: Ruang penyimpanan terisolasi untuk proyek web pesanan klien.
-│
-├─ 10_konfigurasi_lama/    - Arsip file konfigurasi dari versi sebelumnya.
-│   ├─ database.php         - File komponen aplikasi.
-│
-├─ 11_inti_lama/           - Arsip file fungsi inti dari versi sebelumnya.
-│   ├─ auth.php             - File komponen aplikasi.
-│   ├─ helpers.php          - File komponen aplikasi.
+├─ 09_proyek_klien/        - Folder Khusus: Ruang penyimpanan terisolasi untuk portofolio dan undangan klien.
+├─ 10_data_penduduk/       - Modul Khusus: Manajemen data warga dan integrasi AI Scanner KTP.
+├─ 11_data_pendidikan/     - Modul Khusus: Manajemen nilai dan tugas (untuk profesi Guru/Dosen).
+├─ 12_proyek_klien/        - Modul Khusus: Manajemen daftar klien dan proyek (untuk profesi Freelancer).
+├─ 13_produktivitas/       - Modul Umum: To-Do list harian interaktif.
+├─ 14_manajemen_bisnis/    - Modul Umum: Pencatatan arus kas (Keuangan) dan stok barang (Inventaris).
 │
 ├─ index.php                - Front Controller: Pintu gerbang utama yang merangkai semua modul di atas.
+├─ api/ai_chat.php          - Endpoint Backend API untuk memproses Chat dan Tool Vision AI.
 ├─ manifest.json            - Web App Manifest: Konfigurasi PWA (Progressive Web App).
 ├─ sw.js                    - Service Worker: Caching engine untuk performa offline.
+├─ upload_robust.py         - Script otomatisasi FTP deployment khusus update.
 └─ README.md                - Dokumentasi Utama Proyek (File ini).
-```
 
 ---
 ## 📱 Siap Ekosistem Mobile (Android Integration)

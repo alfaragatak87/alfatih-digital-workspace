@@ -1,8 +1,5 @@
 <?php
 // Diekstrak dari 2_tampilan_dasbor.php
-?>
-// ââââââââââââââ PAGE: WORKSPACE ââââââââââââââ
-}elseif($current_page==='workspace'){
     $ws_view=$_GET['view']??'home';
     $base_url="?page=workspace&";
     if($active_folder) $base_url.="folder_id={$active_folder}&";

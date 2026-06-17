@@ -28,8 +28,32 @@ error_reporting(E_ALL);
 // ============================================================
 
 require_once '00_sistem_inti/1_koneksi_database.php';
+require_once '00_sistem_inti/4_migrasi_otomatis.php';
 require_once '00_sistem_inti/3_fungsi_pembantu.php';
 require_once '01_autentikasi/1_proses_cek_login.php';
-require_once '06_halaman_publik/1_tampilan_cv_publik.php';
+
+// PORTAL PUBLIK (BELUM LOGIN)
+if (empty($_SESSION['username'])) {
+    $pub_page = $_GET['page'] ?? 'hub';
+    require_once '06_halaman_publik/1_tampilan_cv_publik.php';
+    exit;
+}
+
+// PENGATURAN SESI & DASBOR (SUDAH LOGIN)
 require_once '02_dasbor_utama/1_pengaturan_sesi.php';
+
+if (($_GET['page'] ?? '') === 'lengkapi_profil') {
+    require_once '06_halaman_publik/3_lengkapi_profil.php';
+    exit;
+}
+
+// PROSES AKSI BACKEND (POST/GET ACTIONS)
+require_once '03_pengelola_drive/1_proses_aksi_file.php';
+require_once '04_pembuat_cv/2_proses_aksi_profil.php';
+require_once '05_panel_superadmin/2_proses_aksi_pengguna.php';
+
+// PENGATURAN TATA LETAK & SORTING (WORKSPACE)
+require_once '03_pengelola_drive/2_pengaturan_workspace.php';
+
+// RENDER UI DASBOR
 require_once '02_dasbor_utama/2_tampilan_dasbor.php';

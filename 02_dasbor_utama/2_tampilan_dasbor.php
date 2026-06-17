@@ -318,10 +318,10 @@ a{color:inherit;text-decoration:none;}
 .profile-menu-links a:hover i,.profile-menu-links button:hover i{color:var(--accent);}
 .menu-divider{border:none;border-top:1px solid var(--border);}
 
-/* ââ SIDEBAR ââ */
+/* ══ SIDEBAR ══ */
 .sidebar{
   position:fixed;
-  left:calc(-1 * var(--sidebar-w) - 20px);
+  left:0;
   top:0;width:var(--sidebar-w);height:100vh;
   background:var(--surface);
   border-right:1px solid var(--border-md);
@@ -331,6 +331,9 @@ a{color:inherit;text-decoration:none;}
   display:flex;flex-direction:column;
   overflow-y:auto;
   box-shadow:none;
+}
+body.sidebar-hidden .sidebar {
+  left:calc(-1 * var(--sidebar-w) - 20px);
 }
 .sidebar.active{
   left:0;
@@ -414,11 +417,16 @@ a{color:inherit;text-decoration:none;}
 }
 .storage-text{font-size:.75rem;color:var(--text-muted);font-weight:500;}
 
-/* ââ MAIN LAYOUT ââ */
+/* ══ MAIN LAYOUT ══ */
 .main-wrapper{
   display:flex;
   height:calc(100vh - var(--nav-h));
   overflow:hidden;
+  margin-left: var(--sidebar-w);
+  transition: margin-left var(--tr-spring);
+}
+body.sidebar-hidden .main-wrapper {
+  margin-left: 0;
 }
 .content-area{
   flex:1;padding:0;
@@ -1678,6 +1686,9 @@ a{color:inherit;text-decoration:none;}
 .mobile-panel-overlay{display:none;}
 
 @media(max-width:768px){
+  .sidebar { left:calc(-1 * var(--sidebar-w) - 20px); }
+  .sidebar.active { left: 0; }
+  .main-wrapper { margin-left: 0; }
   .top-navbar{padding:0 14px;}
   .header-center{display:none;}
   .header-right .stats-badge{display:none;}
@@ -1944,9 +1955,9 @@ body { background: var(--bg); color: var(--text-main); }
 <?php else: ?>
     <div class="header-left">
         <button class="btn-icon btn-menu" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-        <div class="logo-mark" onclick="window.location='index.php?page=beranda'" style="cursor:pointer;">
-          <img src="07_aset_visual/images/LOGO_GAWE.svg" alt="Logo" onerror="this.style.display='none'">
-          <span>WORKSPACE</span>
+        <div class="logo-mark" onclick="window.location='index.php?page=beranda'" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Logo" style="height:32px; width:32px;">
+          <span style="font-weight: 800; font-size: 1.2rem; color: #fff; letter-spacing: 1px;">WORKSPACE</span>
         </div>
         <?php if(isSuperAdmin()){?><span class="sa-badge"><i class="fa-solid fa-crown" style="margin-right:3px;font-size:.8em;"></i>God Mode</span><?php }?>
     </div>
@@ -2020,6 +2031,19 @@ body { background: var(--bg); color: var(--text-main); }
     <div class="sidebar-section">
         <div class="sidebar-section-label">Main</div>
         <a href="index.php?page=beranda" class="nav-item <?= $current_page==='beranda'?'active':'' ?>"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+        
+        <?php if(($_SESSION['profesi']??'') === 'Pegawai Balai Desa' || isSuperAdmin()): ?>
+        <a href="index.php?page=data_penduduk" class="nav-item <?= $current_page==='data_penduduk'?'active':'' ?>"><i class="fa-solid fa-users"></i> Data Warga (AI)</a>
+        <?php endif; ?>
+        
+        <?php if(($_SESSION['profesi']??'') === 'Guru / Dosen' || isSuperAdmin()): ?>
+        <a href="index.php?page=data_pendidikan" class="nav-item <?= $current_page==='data_pendidikan'?'active':'' ?>"><i class="fa-solid fa-graduation-cap"></i> Tugas & Nilai</a>
+        <?php endif; ?>
+        
+        <?php if(($_SESSION['profesi']??'') === 'Pekerja Lepas / Kreatif' || isSuperAdmin()): ?>
+        <a href="index.php?page=proyek_klien" class="nav-item <?= $current_page==='proyek_klien'?'active':'' ?>"><i class="fa-solid fa-briefcase"></i> Proyek Klien</a>
+        <?php endif; ?>
+
         <a href="index.php?page=workspace" class="nav-item <?= $current_page==='workspace'?'active':'' ?>"><i class="fa-solid fa-folder-open"></i> Workspace</a>
         <a href="index.php?page=workspace&view=recent" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Akses Terbaru</a>
         <a href="index.php?page=workspace&view=assets" class="nav-item"><i class="fa-solid fa-images"></i> Aset Visual</a>
@@ -2032,8 +2056,16 @@ body { background: var(--bg); color: var(--text-main); }
         <a href="index.php" target="_blank" class="nav-item"><i class="fa-solid fa-users"></i> Direktori Talent</a>
     </div>
     <div class="sidebar-section">
+        <div class="sidebar-section-label">Produktivitas & Bisnis</div>
+        <a href="index.php?page=todo" class="nav-item <?= $current_page==='todo'?'active':'' ?>"><i class="fa-solid fa-list-check"></i> To-Do List</a>
+        <a href="index.php?page=keuangan" class="nav-item <?= $current_page==='keuangan'?'active':'' ?>"><i class="fa-solid fa-wallet"></i> Keuangan</a>
+        <a href="index.php?page=inventaris" class="nav-item <?= $current_page==='inventaris'?'active':'' ?>"><i class="fa-solid fa-boxes-stacked"></i> Inventaris Barang</a>
+        <a href="#" class="nav-item" onclick="toggleKalkulator(); return false;"><i class="fa-solid fa-calculator"></i> Kalkulator</a>
+    </div>
+    <div class="sidebar-section">
         <div class="sidebar-section-label">Lainnya</div>
         <a href="index.php?page=workspace&view=trash" class="nav-item"><i class="fa-solid fa-trash-can"></i> Tong Sampah</a>
+        <a href="index.php" class="nav-item" style="color:var(--success);"><i class="fa-solid fa-house-chimney"></i> Halaman Publik</a>
     </div>
     <?php if(isSuperAdmin()){?>
     <div class="sidebar-section">
@@ -2058,10 +2090,28 @@ body { background: var(--bg); color: var(--text-main); }
 }?>
 
 <?php
-        require_once '02_dasbor_utama/3_tampilan_beranda.php';
-        require_once '03_pengelola_drive/3_tampilan_workspace.php';
-        require_once '04_pembuat_cv/1_tampilan_cv_builder.php';
-        require_once '05_panel_superadmin/1_tampilan_pengguna.php';
+        if ($current_page === 'beranda') {
+            require_once '02_dasbor_utama/3_tampilan_beranda.php';
+        } elseif ($current_page === 'workspace') {
+            require_once '03_pengelola_drive/3_tampilan_workspace.php';
+        } elseif ($current_page === 'profile') {
+            require_once '04_pembuat_cv/1_tampilan_cv_builder.php';
+        } elseif ($current_page === 'manajemen-pengguna') {
+            require_once '05_panel_superadmin/1_tampilan_pengguna.php';
+        } elseif ($current_page === 'data_penduduk') {
+            require_once '10_data_penduduk/1_tampilan_data.php';
+        } elseif ($current_page === 'data_pendidikan') {
+            require_once '11_data_pendidikan/1_tampilan_data.php';
+        } elseif ($current_page === 'proyek_klien') {
+            require_once '12_proyek_klien/1_tampilan_data.php';
+        } elseif ($current_page === 'todo') {
+            require_once '13_produktivitas/1_tampilan_todo.php';
+        } elseif ($current_page === 'keuangan') {
+            require_once '14_manajemen_bisnis/1_tampilan_keuangan.php';
+        } elseif ($current_page === 'inventaris') {
+            require_once '14_manajemen_bisnis/2_tampilan_inventaris.php';
+        }
+?>
     </div><!-- end content-area -->
 
     <!-- RIGHT SIDEBAR -->
@@ -2160,11 +2210,15 @@ const CURRENT_PAGE = '<?= h($current_page) ?>';
 // ââ SIDEBAR ââââââââââââââââââââââââââââââââââââââââââââââââââ
 let sidebarOpen = false;
 function toggleSidebar() {
-    const sb = document.getElementById('sidebar');
-    const ov = document.getElementById('sidebarOverlay');
-    sidebarOpen = !sidebarOpen;
-    if (sidebarOpen) { sb.classList.add('active'); ov.classList.add('active'); document.body.style.overflow = 'hidden'; }
-    else { sb.classList.remove('active'); ov.classList.remove('active'); document.body.style.overflow = ''; }
+    if (window.innerWidth > 768) {
+        document.body.classList.toggle('sidebar-hidden');
+    } else {
+        const sb = document.getElementById('sidebar');
+        const ov = document.getElementById('sidebarOverlay');
+        sidebarOpen = !sidebarOpen;
+        if (sidebarOpen) { sb.classList.add('active'); ov.classList.add('active'); document.body.style.overflow = 'hidden'; }
+        else { sb.classList.remove('active'); ov.classList.remove('active'); document.body.style.overflow = ''; }
+    }
 }
 
 // ââ PROFILE MENU âââââââââââââââââââââââââââââââââââââââââââââ
@@ -2344,9 +2398,9 @@ function executeBulkMove() {
     document.getElementById('bulkMoveForm').submit();
 }
 
-// ââ CONFIRM DIALOG ââââââââââââââââââââââââââââââââââââââââââââ
+// ── CONFIRM DIALOG ────────────────────────────────────────────
 let confirmCallback = null;
-function showConfirm(title, message, callback, icon = 'â ï¸') {
+function showConfirm(title, message, callback, icon = '⚠️') {
     document.getElementById('confirmTitle').textContent   = title;
     document.getElementById('confirmMessage').textContent = message;
     document.getElementById('confirmIcon').textContent    = icon;
@@ -2356,7 +2410,7 @@ function showConfirm(title, message, callback, icon = 'â ï¸') {
 function closeConfirm() { document.getElementById('confirmOverlay').classList.remove('active'); confirmCallback = null; }
 function executeConfirmAction() { if (confirmCallback) confirmCallback(); closeConfirm(); }
 
-// ââ ACTION DROPDOWN TOGGLE âââââââââââââââââââââââââââââââââââ
+// ── ACTION DROPDOWN TOGGLE ───────────────────────────────────
 function toggleActionMenu(event, id) {
     event.stopPropagation();
     const dd = document.getElementById(id);
@@ -2365,7 +2419,7 @@ function toggleActionMenu(event, id) {
     if (!isOpen) dd.classList.add('show');
 }
 
-// ââ INLINE RENAME âââââââââââââââââââââââââââââââââââââââââââââ
+// ── INLINE RENAME ─────────────────────────────────────────────
 function startInlineRename(card) {
     if (!card) return;
     const nameEl = card.querySelector('.item-name');
@@ -2390,7 +2444,7 @@ function submitRename(card, newName) {
     document.getElementById('renameForm').submit();
 }
 
-// ââ PREVIEW MODAL âââââââââââââââââââââââââââââââââââââââââââââ
+// ── PREVIEW MODAL ─────────────────────────────────────────────
 function openPreview(filename, fileUrl, previewType, fileId) {
     const overlay  = document.getElementById('previewOverlay');
     const body     = document.getElementById('previewBody');
@@ -2416,7 +2470,7 @@ function openPreview(filename, fileUrl, previewType, fileId) {
 }
 function closePreview() { document.getElementById('previewOverlay').classList.remove('active'); document.getElementById('previewBody').innerHTML = ''; }
 
-// ââ FAB âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── FAB ───────────────────────────────────────────────────────
 function toggleFab() {
     const m = document.getElementById('fabMenu'), b = document.getElementById('fabBtn');
     if (!m) return;
@@ -2424,7 +2478,7 @@ function toggleFab() {
     b.innerHTML = m.classList.contains('active') ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-plus"></i>';
 }
 
-// ââ SWITCH TYPE (file/link in addItem modal) ââââââââââââââââââ
+// ── SWITCH TYPE (file/link in addItem modal) ──────────────────
 function switchType(type) {
     document.getElementById('jenis_input').value = type;
     const ff = document.getElementById('form_file'), fl = document.getElementById('form_link');
@@ -2440,7 +2494,7 @@ function switchType(type) {
     }
 }
 
-// ââ FILE INPUT DISPLAY ââââââââââââââââââââââââââââââââââââââââ
+// ── FILE INPUT DISPLAY ────────────────────────────────────────
 const modalFileInput = document.getElementById('modal_file_input');
 if (modalFileInput) {
     modalFileInput.addEventListener('change', function() {
@@ -2464,7 +2518,7 @@ if (uploadZone) {
     });
 }
 
-// ââ DRAG & DROP BETWEEN FOLDERS ââââââââââââââââââââââââââââââ
+// ── DRAG & DROP BETWEEN FOLDERS ──────────────────────────────
 document.addEventListener('dragstart', function(e) {
     const card = e.target.closest('.item-card');
     if (!card) { e.preventDefault(); return; }
@@ -2502,7 +2556,7 @@ document.addEventListener('drop', function(e) {
     } catch(err) { /* desktop file drop handled by global overlay */ }
 });
 
-// ââ GLOBAL FILE DROP OVERLAY ââââââââââââââââââââââââââââââââââ
+// ── GLOBAL FILE DROP OVERLAY ──────────────────────────────────
 const dropOverlay = document.getElementById('globalDropOverlay');
 const autoForm    = document.getElementById('autoUploadForm');
 const autoInput   = document.getElementById('autoFileInput');
@@ -2527,7 +2581,7 @@ if (dropOverlay && autoInput) {
     });
 }
 
-// ââ COPY LINK ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── COPY LINK ────────────────────────────────────────────────
 function copyLink(url) {
     navigator.clipboard.writeText(url).then(() => { showToast('<i class="fa-solid fa-check-circle"></i> Link berhasil disalin!'); });
 }
@@ -2536,7 +2590,7 @@ function copyPortfolioLink() {
     if (inp) navigator.clipboard.writeText(inp.value).then(() => { showToast('<i class="fa-solid fa-check-circle"></i> Link portfolio disalin!'); });
 }
 
-// ââ KEYBOARD SHORTCUTS ââââââââââââââââââââââââââââââââââââââââ
+// ── KEYBOARD SHORTCUTS ────────────────────────────────────────
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeConfirm(); closePreview(); closeMobilePanel();
@@ -2563,7 +2617,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// ââ PROFILE TAB SWITCHING âââââââââââââââââââââââââââââââââââââ
+// ── PROFILE TAB SWITCHING ─────────────────────────────────────
 function switchTab(tabId) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -2574,7 +2628,7 @@ function switchTab(tabId) {
     });
 }
 
-// ââ AJAX PROFILE SAVE WITH SWEETALERT ââââââââââââââââââââââââ
+// ── AJAX PROFILE SAVE WITH SWEETALERT ────────────────────────
 function submitProfileForm(formId, label) {
     const form = document.getElementById(formId);
     if (!form) return;
@@ -2596,7 +2650,7 @@ function submitProfileForm(formId, label) {
         });
 }
 
-// ââ DYNAMIC ACCORDION ITEM BUILDERS ââââââââââââââââââââââââââ
+// ── DYNAMIC ACCORDION ITEM BUILDERS ──────────────────────────
 function _dynField(name, label, placeholder, value) {
     return `<div class="dyn-field"><label>${label}</label><input type="text" name="${name}" value="${value||''}" placeholder="${placeholder||label}"></div>`;
 }
@@ -2648,7 +2702,7 @@ function addExpItem() {
         <div class="dyn-body"><div class="dyn-body-inner"><div class="dyn-body-grid">
             ${_dynField('exp_jabatan[]','Jabatan / Posisi','cth: UI/UX Designer')}
             ${_dynField('exp_perusahaan[]','Perusahaan / Organisasi','cth: PT Alfatih Digital')}
-            ${_dynField('exp_periode[]','Periode','cth: 2022 â 2024')}
+            ${_dynField('exp_periode[]','Periode','cth: 2022 — 2024')}
             ${_dynTextarea('exp_desc[]','Uraikan tanggung jawab, pencapaian, atau kontribusi Anda...')}
         </div></div></div>`;
     list.appendChild(div);
@@ -2708,7 +2762,7 @@ function addPortoItem() {
     portoCount++;
 }
 
-// ââ USER MANAGEMENT (SuperAdmin) âââââââââââââââââââââââââââââ
+// ── USER MANAGEMENT (SuperAdmin) ─────────────────────────────
 function openEditUserModal(id, username, nama, role) {
     document.getElementById('eu_id').value       = id;
     document.getElementById('eu_username').value = username;
@@ -2723,29 +2777,29 @@ function confirmDeleteUser(id, username) {
         function() {
             document.getElementById('del_uid_input').value = id;
             document.getElementById('deleteUserForm').submit();
-        }, 'ðï¸'
+        }, '🗑️'
     );
 }
 
-// ââ AUTO SHOW TOAST for server-side alert âââââââââââââââââââââ
+// ── AUTO SHOW TOAST for server-side alert ─────────────────────
 <?php if (!empty($alert_msg)) {
     $is_err = (str_contains($alert_msg,'gagal') || str_contains($alert_msg,'tidak valid') || str_contains($alert_msg,'Sesi'));
     if (!$is_err) { ?>
 setTimeout(() => showToast('<i class="fa-solid fa-circle-check" style="margin-right:6px;color:#16a34a;"></i> <?= h($alert_msg) ?>'), 300);
 <?php } } ?>
 
-/* âââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ═══════════════════════════════════════════════════
    DASHBOARD MICRO-INTERACTIONS & ANIMATION v2
    Stagger reveals, accordion grid-rows, hover glow
-   âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ═══════════════════════════════════════════════════ */
 
-// ââ Page Load: Stagger all stat blocks ââ
+// ── Page Load: Stagger all stat blocks ──
 document.querySelectorAll('.bento-card,.stat-block,.ed-card,.section-card').forEach((el, i) => {
   el.classList.add('stagger-child');
   el.style.animationDelay = (0.03 + i * 0.05) + 's';
 });
 
-// ââ Accordion: Smooth grid-rows toggle ââ
+// ── Accordion: Smooth grid-rows toggle ──
 function toggleAccordion(item) {
   const wasOpen = item.classList.contains('is-open');
   const list = item.closest('.dyn-list');
@@ -2757,14 +2811,14 @@ function toggleAccordion(item) {
   if (!wasOpen) item.classList.add('is-open');
 }
 
-// ââ Item Card: hover glow border effect ââ
+// ── Item Card: hover glow border effect ──
 document.querySelectorAll('.item-card').forEach(card => {
   card.addEventListener('mouseenter', () => {
     card.style.transition = 'background .15s,box-shadow .2s';
   });
 });
 
-// ââ Sidebar nav items: Ripple on click ââ
+// ── Sidebar nav items: Ripple on click ──
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', function(e) {
     const ripple = document.createElement('span');
@@ -2793,7 +2847,7 @@ const rippleStyle = document.createElement('style');
 rippleStyle.textContent = `@keyframes ripple-expand{to{transform:scale(2.5);opacity:0;}}`;
 document.head.appendChild(rippleStyle);
 
-// ââ Smooth Scroll Reveal for content area ââ
+// ── Smooth Scroll Reveal for content area ──
 const dashReveal = new IntersectionObserver(entries => {
   entries.forEach((e, i) => {
     if (e.isIntersecting) {
@@ -2809,7 +2863,7 @@ document.querySelectorAll('.user-table tr,.activity-table tr,.profile-check-item
   dashReveal.observe(el);
 });
 
-// ââ Storage bar animated fill on load ââ
+// ── Storage bar animated fill on load ──
 document.querySelectorAll('.storage-bar-fill').forEach(bar => {
   const target = bar.style.width;
   bar.style.width = '0';
@@ -2819,21 +2873,28 @@ document.querySelectorAll('.storage-bar-fill').forEach(bar => {
   }, 400);
 });
 
-// ââ Avatar hover: remove grayscale ââ
+// ── Avatar hover: remove grayscale ──
 document.querySelectorAll('.user-avatar-sm').forEach(img => {
   img.addEventListener('mouseenter', () => {img.style.filter = 'none';img.style.transform = 'scale(1.05)';});
   img.addEventListener('mouseleave', () => {img.style.filter = '';img.style.transform = '';});
 });
 
-// ââ PWA SERVICE WORKER ââââââââââââââââââââââââââââââââââââââââ
+// ── PWA SERVICE WORKER ────────────────────────────────────────
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 </script>
+
+<!-- Mengikutkan Widget AI Assistant Alfatih -->
+<?php include '02_dasbor_utama/5_ai_widget.php'; ?>
+
+<!-- Mengikutkan Widget Kalkulator -->
+<?php include '02_dasbor_utama/6_kalkulator_widget.php'; ?>
+
 <script>
   const CSRF = '<?= h($csrf_token) ?>';
   const CURRENT_USERNAME = '<?= h($username) ?>';
 </script>
-<script src="07_aset_visual/js/context_menu.js"></script>
+<script src="aset/js/context_menu.js"></script>
 </body>
 </html>

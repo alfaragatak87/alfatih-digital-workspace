@@ -9,20 +9,20 @@
 if (!defined('SITE_URL')) exit; 
 
 // +------------------------------------------------------------------------------+
-// ¦  FILE: tampilan/dasbor/pembuat_cv.php                                        ¦
-// ¦                                                                              ¦
-// ¦  DESKRIPSI:                                                                  ¦
-// ¦  Antarmuka Builder (Pembuat) CV dan Profil Profesional. Berisi form panjang  ¦
-// ¦  untuk mengisi data Identitas, Ringkasan, Pendidikan, Pengalaman, dan Skill. ¦
-// ¦                                                                              ¦
-// ¦  KONEKSI & RELASI:                                                           ¦
-// ¦  - Di-include oleh index.php pada rute page=profile.                     ¦
-// ¦  - Mengirim data (Submit) ke ksi_profil.php melalui index.php dengan    ¦
-// ¦    action 'save_profile_data' untuk dibungkus ke format JSON.                ¦
-// ¦                                                                              ¦
-// ¦  BARIS KODE PENTING:                                                         ¦
-// ¦  - Blok Input Array (Pendidikan/Skill) : Memungkinkan user untuk menambah    ¦
-// ¦    kolom input dinamis (Multiple rows) via JavaScript Vanilla.               ¦
+//   FILE: tampilan/dasbor/pembuat_cv.php                                        
+//                                                                               
+//   DESKRIPSI:                                                                  
+//   Antarmuka Builder (Pembuat) CV dan Profil Profesional. Berisi form panjang  
+//   untuk mengisi data Identitas, Ringkasan, Pendidikan, Pengalaman, dan Skill. 
+//                                                                               
+//   KONEKSI & RELASI:                                                           
+//   - Di-include oleh index.php pada rute page=profile.                     
+//   - Mengirim data (Submit) ke ksi_profil.php melalui index.php dengan    
+//     action 'save_profile_data' untuk dibungkus ke format JSON.                
+//                                                                               
+//   BARIS KODE PENTING:                                                         
+//   - Blok Input Array (Pendidikan/Skill) : Memungkinkan user untuk menambah    
+//     kolom input dinamis (Multiple rows) via JavaScript Vanilla.               
 // +------------------------------------------------------------------------------+
 $active_tab = $_GET['tab'] ?? 'identitas';
 $ident_d = $profile_data['identitas'] ?? [];
@@ -1167,3 +1167,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 </script>
+

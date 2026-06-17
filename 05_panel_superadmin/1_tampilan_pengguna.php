@@ -6,23 +6,22 @@
 // |  Menampilkan antarmuka manajemen pengguna untuk Superadmin.                  |
 // |                                                                              |
 // +------------------------------------------------------------------------------+
-if (!defined('SITE_URL')) exit; 
-
+if (!defined('SITE_URL')) exit;
 // +------------------------------------------------------------------------------+
-// ¦  FILE: tampilan/dasbor/pengelola_pengguna.php                                ¦
-// ¦                                                                              ¦
-// ¦  DESKRIPSI:                                                                  ¦
-// ¦  Panel eksklusif untuk tingkat Superadmin. Digunakan untuk mendaftarkan akun ¦
-// ¦  baru, mengubah password pengguna lain, dan mengatur Role (Peran).           ¦
-// ¦                                                                              ¦
-// ¦  KONEKSI & RELASI:                                                           ¦
-// ¦  - Di-include oleh index.php pada rute page=manajemen-pengguna.          ¦
-// ¦  - Hanya bisa diakses jika fungsi isSuperAdmin() bernilai TRUE.            ¦
-// ¦                                                                              ¦
-// ¦  BARIS KODE PENTING:                                                         ¦
-// ¦  - Tabel List Users : Mengambil data dari variabel global $all_users.      ¦
-// ¦  - Tombol Aksi : Terhubung langsung ke Form Modals yang diatur untuk         ¦
-// ¦    menembak endpoint aksi dd_user, edit_user, atau delete_user.       ¦
+//   FILE: tampilan/dasbor/pengelola_pengguna.php                                
+//                                                                               
+//   DESKRIPSI:                                                                  
+//   Panel eksklusif untuk tingkat Superadmin. Digunakan untuk mendaftarkan akun 
+//   baru, mengubah password pengguna lain, dan mengatur Role (Peran).           
+//                                                                               
+//   KONEKSI & RELASI:                                                           
+//   - Di-include oleh index.php pada rute page=manajemen-pengguna.          
+//   - Hanya bisa diakses jika fungsi isSuperAdmin() bernilai TRUE.            
+//                                                                               
+//   BARIS KODE PENTING:                                                         
+//   - Tabel List Users : Mengambil data dari variabel global $all_users.      
+//   - Tombol Aksi : Terhubung langsung ke Form Modals yang diatur untuk         
+//     menembak endpoint aksi dd_user, edit_user, atau delete_user.       
 // +------------------------------------------------------------------------------+
 if (!isSuperAdmin()) {
     echo "<div class='empty-state' style='cursor:default;'><i class='fa-solid fa-lock'></i><h3>Akses Ditolak</h3><p>Hanya untuk Super Admin.</p></div>";
@@ -240,7 +239,7 @@ if ($ctrl_user) {
                 <?php if($u['username'] !== $username){?>
                 <button class="action-btn-sm edit-btn" onclick="openEditUserModal(<?= $u['id'] ?>,'<?= h($u['username']) ?>','<?= h($u['nama_lengkap']??'') ?>','<?= h($u['role']) ?>')"><i class="fa-solid fa-pen"></i></button>
                 <button class="action-btn-sm del-btn" onclick="confirmDeleteUser(<?= $u['id'] ?>,'<?= h($u['username']) ?>')"><i class="fa-solid fa-trash"></i></button>
-                <?php } else { ?><span style="font-size:.75rem;color:#10b981;padding:6px 10px;background:rgba(16,185,129,0.1);border-radius:6px;font-weight:600;"><i class="fa-solid fa-check"></i> Akun Anda</span><?php } ?>
+                <?php } ?>
             </div>
         </div>
         <?php } ?>
