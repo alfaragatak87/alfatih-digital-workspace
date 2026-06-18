@@ -110,7 +110,7 @@ $porto_d = $profile_data['portfolio'] ?? [];
     height: 96px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 0 0 4px #1c1e29, 0 0 0 8px rgba(139, 92, 246, 0.5), 0 12px 24px rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 4px var(--surface), 0 0 0 8px rgba(139, 92, 246, 0.5), 0 12px 24px rgba(0,0,0,0.5);
     position: relative;
     z-index: 1;
 }
@@ -170,7 +170,7 @@ $porto_d = $profile_data['portfolio'] ?? [];
 }
 .portfolio-link-box button {
     background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(0,0,0,0.1);
     color: #e2e8f0;
     border-radius: 8px;
     padding: 6px 12px;
@@ -203,7 +203,7 @@ $porto_d = $profile_data['portfolio'] ?? [];
 }
 .pb-form-group label i { color: #8b5cf6; font-size: 0.9em; }
 .pb-input {
-    background: #15161f;
+    background: var(--surface-3);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 8px;
     padding: 12px 16px;
@@ -218,7 +218,7 @@ $porto_d = $profile_data['portfolio'] ?? [];
     box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
     outline: none;
 }
-select.pb-input option { background: #1c1e29; color: #fff; }
+select.pb-input option { background: var(--surface); color: var(--text-main); }
 .pb-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
 /* IDENTITAS MASONRY */
@@ -231,7 +231,7 @@ select.pb-input option { background: #1c1e29; color: #fff; }
     gap: 24px;
 }
 .pb-card {
-    background: #1c1e29;
+    background: var(--surface);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 20px;
     padding: 24px;
@@ -254,7 +254,7 @@ select.pb-input option { background: #1c1e29; color: #fff; }
 }
 .pb-split-left {
     width: 380px;
-    background: #1c1e29;
+    background: var(--surface);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 20px;
     display: flex;
@@ -268,7 +268,7 @@ select.pb-input option { background: #1c1e29; color: #fff; }
     justify-content: space-between;
     align-items: center;
 }
-.pb-split-left-title { font-size: 1.1rem; font-weight: 600; color: #fff; }
+.pb-split-left-title { font-size: 1.1rem; font-weight: 600; color: var(--text-main); }
 .pb-btn-add {
     background: rgba(16, 185, 129, 0.15);
     color: #10b981;
@@ -329,7 +329,7 @@ select.pb-input option { background: #1c1e29; color: #fff; }
 .pb-btn-action.danger { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 .pb-split-right {
     flex-grow: 1;
-    background: #1c1e29;
+    background: var(--surface);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 20px;
     padding: 32px;
@@ -853,7 +853,7 @@ $isCustom = ($currentProfesi !== '' && !in_array($currentProfesi, $predefined));
                 echo "<div class='timeline-item' style='display:flex;align-items:flex-start;gap:16px;padding:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:12px;'>";
                 echo "<div class='tl-icon' style='width:40px;height:40px;border-radius:50%;background:$bg_col;color:$ico_col;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;'><i class='fa-solid $ico'></i></div>";
                 echo "<div class='tl-content' style='flex:1;'>";
-                echo "<div class='tl-title' style='color:#fff;font-weight:600;font-size:0.95rem;margin-bottom:4px;'>".h($ra['action'])."</div>";
+                echo "<div class='tl-title' style='color:var(--text-main);font-weight:600;font-size:0.95rem;margin-bottom:4px;'>".h($ra['action'])."</div>";
                 echo "<div class='tl-desc' style='color:#cbd5e1;font-size:0.85rem;margin-bottom:8px;'>".h($ra['details']??'-')."</div>";
                 echo "<div class='tl-meta' style='color:#64748b;font-size:0.75rem;display:flex;gap:12px;'><span title='Waktu'><i class='fa-regular fa-clock'></i> ".date('d M Y, H:i',strtotime($ra['created_at']))."</span> <span title='IP Address'><i class='fa-solid fa-network-wired'></i> ".h($ra['ip_address']??'-')."</span></div>";
                 echo "</div></div>";
@@ -1167,4 +1167,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 </script>
+
+
 

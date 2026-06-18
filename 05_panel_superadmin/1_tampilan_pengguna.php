@@ -51,7 +51,7 @@ if ($ctrl_user) {
     flex-wrap: wrap;
     gap: 16px;
 }
-.um-header-left h1 { margin: 0 0 8px 0; font-size: 2rem; color: #fff; }
+.um-header-left h1 { margin: 0 0 8px 0; font-size: 2rem; color: var(--text-main); }
 .um-header-left p { margin: 0; color: #a5b4fc; font-size: 0.95rem; }
 .god-mode-badge {
     background: #4f46e5;
@@ -66,7 +66,7 @@ if ($ctrl_user) {
     margin-bottom: 12px;
 }
 .um-control-panel {
-    background: #1c1e29;
+    background: var(--surface);
     border: 1px solid rgba(245, 158, 11, 0.3);
     border-left: 4px solid #f59e0b;
     border-radius: 16px;
@@ -95,10 +95,10 @@ if ($ctrl_user) {
     margin-bottom: 20px;
     padding: 0 8px;
 }
-.um-table-header h3 { margin: 0; color: #fff; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+.um-table-header h3 { margin: 0; color: var(--text-main); font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
 
 .user-list-item {
-    background: #1c1e29;
+    background: var(--surface);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 16px;
     padding: 20px 24px;
@@ -158,7 +158,8 @@ if ($ctrl_user) {
             <p>Kontrol penuh atas semua akun dalam sistem.</p>
         </div>
         <div>
-            <button class="btn-primary" onclick="openModal('addUserModal')" style="padding: 12px 24px; border-radius: 10px; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-user-plus"></i> Tambah User</button>
+            <input type="text" id="userSearch" placeholder="Cari nama atau username..." style="padding: 12px 20px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background: var(--surface); color: var(--text-main); margin-right: 12px; font-size: 0.95rem; width: 250px;" onkeyup="filterUsers()">
+            <button class="btn-primary" onclick="openModal('addUserModal')" style="padding: 12px 24px; border-radius: 10px; font-size: 0.95rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;"><i class="fa-solid fa-user-plus"></i> Tambah User</button>
         </div>
     </div>
 <?php if($ctrl_user && $ctrl_data){ ?>
@@ -175,11 +176,14 @@ if ($ctrl_user) {
             <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.05); flex-wrap: wrap;">
                 <img src="<?= h($cu_path) ?>" style="width:80px;height:80px;object-fit:cover;border-radius:12px;border:2px solid rgba(255,255,255,0.1);" alt="">
                 <div>
-                    <div style="font-size:1.4rem;font-weight:800;margin-bottom:4px;color:#fff;"><?= h($ctrl_data['nama_lengkap']??$ctrl_data['username']) ?></div>
+                    <div style="font-size:1.4rem;font-weight:800;margin-bottom:4px;color: var(--text-main);"><?= h($ctrl_data['nama_lengkap']??$ctrl_data['username']) ?></div>
                     <div style="font-size:.85rem;color:#94a3b8;margin-bottom:12px;">@<?= h($ctrl_data['username']) ?> &middot; <span class="role-badge <?= h($ctrl_data['role']) ?>" style="background:rgba(255,255,255,0.1);padding:4px 8px;border-radius:6px;"><?= h($ctrl_data['role']) ?></span></div>
                     <div style="display:flex;gap:8px; flex-wrap: wrap;">
                         <a href="<?= SITE_URL ?>/index.php?portfolio=<?= urlencode($ctrl_data['username']) ?>" target="_blank" class="action-btn-sm view-btn"><i class="fa-solid fa-globe"></i> Lihat Portfolio</a>
                         <button class="action-btn-sm edit-btn" onclick="openEditUserModal(<?= $ctrl_data['id'] ?>,'<?= h($ctrl_data['username']) ?>','<?= h($ctrl_data['nama_lengkap']??'') ?>','<?= h($ctrl_data['role']) ?>')"><i class="fa-solid fa-pen"></i> Edit Profil User</button>
+                        <?php if($ctrl_data['username'] !== $username) { ?>
+                            <a href="index.php?action=impersonate&target_user=<?= urlencode($ctrl_data['username']) ?>" class="action-btn-sm" style="background:rgba(239, 68, 68, 0.2); color:#ef4444;"><i class="fa-solid fa-person-walking-arrow-right"></i> Login Sebagai User Ini</a>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -225,7 +229,7 @@ if ($ctrl_user) {
             <div class="uli-profile">
                 <img src="<?= h($u_path) ?>" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.1);" alt="">
                 <div>
-                    <div style="font-weight:700;color:#fff;font-size:1.05rem;margin-bottom:2px;"><?= h($u['nama_lengkap']??$u['username']) ?></div>
+                    <div style="font-weight:700;color: var(--text-main);font-size:1.05rem;margin-bottom:2px;"><?= h($u['nama_lengkap']??$u['username']) ?></div>
                     <div style="font-size:0.8rem;color:#64748b;"><?= h($u['email']??'-') ?></div>
                 </div>
             </div>
@@ -245,3 +249,19 @@ if ($ctrl_user) {
         <?php } ?>
     </div>
 </div>
+
+<script>
+function filterUsers() {
+    let input = document.getElementById('userSearch').value.toLowerCase();
+    let items = document.querySelectorAll('.user-list-item');
+    items.forEach(item => {
+        let text = item.innerText.toLowerCase();
+        if (text.includes(input)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+</script>
+

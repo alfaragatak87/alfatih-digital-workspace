@@ -63,22 +63,22 @@ $laba_rugi = $total_pemasukan - $total_pengeluaran;
         <form method="POST" style="display: grid; grid-template-columns: 1fr 1fr 2fr 1fr auto; gap: 12px; align-items: end;">
             <div>
                 <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Tipe</label>
-                <select name="tipe" required style="width:100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); color: #fff; border: 1px solid var(--border);">
+                <select name="tipe" required style="width:100%; padding: 12px; border-radius: 8px; background: var(--surface); color: var(--text-main); border: 1px solid var(--border);">
                     <option value="Pemasukan">Pemasukan</option>
                     <option value="Pengeluaran">Pengeluaran</option>
                 </select>
             </div>
             <div>
                 <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Nominal (Rp)</label>
-                <input type="number" name="nominal" required min="1" style="width:100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); color: #fff; border: 1px solid var(--border);">
+                <input type="number" name="nominal" required min="1" style="width:100%; padding: 12px; border-radius: 8px; background: var(--surface); color: var(--text-main); border: 1px solid var(--border);">
             </div>
             <div>
                 <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Keterangan</label>
-                <input type="text" name="keterangan" required placeholder="Contoh: Beli Bahan Baku" style="width:100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); color: #fff; border: 1px solid var(--border);">
+                <input type="text" name="keterangan" required placeholder="Contoh: Beli Bahan Baku" style="width:100%; padding: 12px; border-radius: 8px; background: var(--surface); color: var(--text-main); border: 1px solid var(--border);">
             </div>
             <div>
                 <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Tanggal</label>
-                <input type="date" name="tanggal" required value="<?= date('Y-m-d') ?>" style="width:100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); color: #fff; border: 1px solid var(--border);">
+                <input type="date" name="tanggal" required value="<?= date('Y-m-d') ?>" style="width:100%; padding: 12px; border-radius: 8px; background: var(--surface); color: var(--text-main); border: 1px solid var(--border);">
             </div>
             <button type="submit" name="tambah_keuangan" style="background: var(--accent); border: none; padding: 12px 24px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; height: 43px;">Simpan</button>
         </form>

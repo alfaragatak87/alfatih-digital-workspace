@@ -41,7 +41,7 @@ if ($res) {
     <!-- Form Tambah -->
     <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: var(--shadow-sm); margin-bottom: 24px;">
         <form method="POST" style="display: flex; gap: 12px;">
-            <input type="text" name="tugas" placeholder="Tambahkan tugas baru..." required style="flex:1; padding: 14px 20px; border-radius: 12px; border: 1px solid var(--border); background: rgba(0,0,0,0.1); color: #fff; font-size: 1rem; outline: none;">
+            <input type="text" name="tugas" placeholder="Tambahkan tugas baru..." required style="flex:1; padding: 14px 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text-main); font-size: 1rem; outline: none;">
             <button type="submit" name="tambah_todo" style="background: linear-gradient(135deg, var(--accent), var(--accent-2)); border: none; padding: 0 24px; border-radius: 12px; color: #fff; font-weight: 600; cursor: pointer; transition: transform 0.2s;"><i class="fa-solid fa-plus"></i> Tambah</button>
         </form>
     </div>

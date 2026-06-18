@@ -49,16 +49,16 @@ if ($resHistory) {
             <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-sm);">
                 <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;"><i class="fa-solid fa-plus-circle"></i> Catat Pergerakan Barang</h3>
                 <form method="POST" style="display: flex; flex-direction: column; gap: 12px;">
-                    <input type="text" name="nama_barang" required placeholder="Nama Barang" style="padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); color: #fff; border: 1px solid var(--border);">
+                    <input type="text" name="nama_barang" required placeholder="Nama Barang" style="padding: 12px; border-radius: 8px; background: var(--surface); color: var(--text-main); border: 1px solid var(--border);">
                     <div style="display: flex; gap: 12px;">
-                        <input type="number" name="jumlah_stok" required min="1" placeholder="Jumlah" style="width:50%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); color: #fff; border: 1px solid var(--border);">
-                        <select name="tipe_pergerakan" required style="width:50%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); color: #fff; border: 1px solid var(--border);">
+                        <input type="number" name="jumlah_stok" required min="1" placeholder="Jumlah" style="width:50%; padding: 12px; border-radius: 8px; background: var(--surface); color: var(--text-main); border: 1px solid var(--border);">
+                        <select name="tipe_pergerakan" required style="width:50%; padding: 12px; border-radius: 8px; background: var(--surface); color: var(--text-main); border: 1px solid var(--border);">
                             <option value="Stok Awal">Stok Awal</option>
                             <option value="Masuk">Masuk</option>
                             <option value="Keluar">Keluar</option>
                         </select>
                     </div>
-                    <input type="text" name="keterangan" placeholder="Keterangan (Opsional)" style="padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); color: #fff; border: 1px solid var(--border);">
+                    <input type="text" name="keterangan" placeholder="Keterangan (Opsional)" style="padding: 12px; border-radius: 8px; background: var(--surface); color: var(--text-main); border: 1px solid var(--border);">
                     <button type="submit" name="tambah_inventaris" style="background: var(--blue); border: none; padding: 12px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; margin-top: 8px;">Simpan Data</button>
                 </form>
             </div>

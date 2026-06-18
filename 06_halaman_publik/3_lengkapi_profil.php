@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         .box h2 { font-family: 'Outfit', sans-serif; margin-top: 0; }
         .form-group { margin-bottom: 16px; text-align: left; }
         label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: #94a3b8; }
-        input, select { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(0,0,0,0.1); color: #fff; border-radius: 8px; box-sizing: border-box; }
         button { width: 100%; padding: 12px; background: #8b5cf6; border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; margin-top: 16px; }
         button:hover { background: #7c3aed; }
     </style>

@@ -17,7 +17,7 @@
     margin-bottom: 24px;
 }
 .greeting-strip-new {
-    background: linear-gradient(120deg, #0f172a 0%, #020617 100%);
+    background: linear-gradient(120deg, var(--accent) 0%, var(--accent-2) 100%); color: #ffffff;
     border-radius: var(--radius-lg);
     border: 1px solid rgba(255,255,255,0.06);
     padding: 36px 40px;
@@ -29,7 +29,7 @@
 }
 <?php if(isSuperAdmin()){ ?>
 .greeting-strip-new {
-    background: linear-gradient(120deg, #31004a 0%, #17002b 100%);
+    background: linear-gradient(120deg, #8b5cf6 0%, #d946ef 100%); color: #ffffff;
     border-color: rgba(217, 70, 239, 0.2);
 }
 .greeting-strip-new::before {
@@ -100,11 +100,13 @@
         font-weight: 700;
         letter-spacing: 0;
         background: none;
-        -webkit-text-fill-color: #fff;
-        color: #fff;
+        
+        color: var(--text-main);
     }
     .stat-sub { display: none; } 
 }
+    .greeting-actions .gqa-btn { color: #ffffff !important; background: rgba(255,255,255,0.15) !important; border-color: rgba(255,255,255,0.3) !important; }
+    .greeting-actions .gqa-btn:hover { background: rgba(255,255,255,0.25) !important; transform: translateY(-2px); }
 </style>
 
 <div class="dash-inner" style="padding-top: 32px;">
@@ -181,12 +183,12 @@
             <?php if($pct_cv == 100){ ?>
             <div style="text-align:center;padding:32px 24px;">
                 <i class="fa-solid fa-circle-check" style="font-size:3.5rem;color:#10b981;margin-bottom:16px;"></i>
-                <div style="font-size:1.2rem;font-weight:700;color:#fff;">Profil Anda Sudah Lengkap & Profesional!</div>
+                <div style="font-size:1.2rem;font-weight:700;color:var(--text-main);">Profil Anda Sudah Lengkap & Profesional!</div>
                 <div style="font-size:0.9rem;color:#94a3b8;margin-top:6px;">Data identitas, pendidikan, pengalaman, dan keahlian sudah terisi dengan baik. CV Anda kini siap digunakan.</div>
             </div>
             <?php } else { ?>
             <div style="padding: 20px 24px; border-bottom: 1px dashed rgba(255,255,255,0.08); cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="const b=document.getElementById('portfolio-optional-body'); const i=document.getElementById('portfolio-optional-icon'); if(b.style.display==='none'){b.style.display='block';i.style.transform='rotate(180deg)';}else{b.style.display='none';i.style.transform='rotate(0)';}">
-                <div style="font-size: 1.05rem; font-weight: 700; color: #fff;">Tertarik Buat Web Portfolio? <span style="font-size: 0.85rem; font-weight: 500; color: #94a3b8;">(Opsional)</span></div>
+                <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-main);">Tertarik Buat Web Portfolio? <span style="font-size: 0.85rem; font-weight: 500; color: #94a3b8;">(Opsional)</span></div>
                 <i id="portfolio-optional-icon" class="fa-solid fa-chevron-down" style="color: #94a3b8; transition: transform 0.3s;"></i>
             </div>
             <div id="portfolio-optional-body" style="display: none;">
@@ -210,3 +212,6 @@
         </div>
     </div>
 <?php
+
+
+

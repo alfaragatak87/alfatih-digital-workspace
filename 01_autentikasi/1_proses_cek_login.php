@@ -222,3 +222,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'login
         }
     }
 }
+
+// ==========================================
+// AKSI IMPERSONATE (HANYA SUPERADMIN)
+// ==========================================
+if (isset($_GET['action']) && $_GET['action'] === 'impersonate' && function_exists('isSuperAdmin') && isSuperAdmin()) {
+    $target = $_GET['target_user'] ?? '';
+    $stmt = $mysqli->prepare("SELECT * FROM users WHERE username=?");
+    if ($stmt) {
+        $stmt->bind_param('s', $target);
+        $stmt->execute();
+        $target_row = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        if ($target_row && $target_row['role'] !== 'superadmin') {
+            // Simpan sesi asli
+            $_SESSION['impersonator'] = $_SESSION['username'];
+            $_SESSION['impersonator_role'] = $_SESSION['role'];
+            // Timpa dengan sesi target
+            $_SESSION['username'] = $target_row['username'];
+            $_SESSION['role'] = $target_row['role'];
+            $_SESSION['uid'] = $target_row['id'];
+            $_SESSION['nama'] = $target_row['nama_lengkap'] ?? $target_row['username'];
+            $_SESSION['profesi'] = $target_row['profesi'] ?? '';
+            $_SESSION['email'] = $target_row['email'] ?? '';
+            $_SESSION['nama_panggilan'] = $target_row['nama_panggilan'] ?? '';
+            header("Location: index.php");
+            exit;
+        } else {
+            $_SESSION['flash_error'] = "Tidak dapat meminjam sesi Superadmin lain atau pengguna tidak ditemukan.";
+            header("Location: index.php?page=manajemen-pengguna");
+            exit;
+        }
+    }
+}
+
+// ==========================================
+// STOP IMPERSONATE
+// ==========================================
+if (isset($_GET['action']) && $_GET['action'] === 'stop_impersonate') {
+    if (isset($_SESSION['impersonator'])) {
+        // Kembalikan ke sesi asli
+        $_SESSION['username'] = $_SESSION['impersonator'];
+        $_SESSION['role'] = $_SESSION['impersonator_role'];
+        // Hapus penanda
+        unset($_SESSION['impersonator']);
+        unset($_SESSION['impersonator_role']);
+        // Redirect kembali ke God Mode
+        header("Location: index.php?page=manajemen-pengguna");
+        exit;
+    }
+}
+

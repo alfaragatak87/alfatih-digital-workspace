@@ -51,6 +51,7 @@ if (($_GET['page'] ?? '') === 'lengkapi_profil') {
 require_once '03_pengelola_drive/1_proses_aksi_file.php';
 require_once '04_pembuat_cv/2_proses_aksi_profil.php';
 require_once '05_panel_superadmin/2_proses_aksi_pengguna.php';
+require_once '15_pengaturan_akun/2_proses_akun.php';
 
 // PENGATURAN TATA LETAK & SORTING (WORKSPACE)
 require_once '03_pengelola_drive/2_pengaturan_workspace.php';

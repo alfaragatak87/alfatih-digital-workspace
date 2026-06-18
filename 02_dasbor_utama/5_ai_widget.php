@@ -99,7 +99,7 @@
 }
 .ai-close-btn {
     background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(0,0,0,0.1);
     color: #cbd5e1;
     font-size: 1rem;
     cursor: pointer;
@@ -147,7 +147,7 @@
 .ai-msg.bot {
     align-self: flex-start;
     background: rgba(30, 41, 59, 0.9);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(0,0,0,0.1);
     color: #f1f5f9;
     border-bottom-left-radius: 4px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -334,7 +334,7 @@
     <div class="ai-image-preview-container" id="ai-image-preview-container">
         <div class="ai-image-preview">
             <img id="ai-preview-img" src="" alt="preview">
-            <div id="ai-preview-doc" style="display:none; background:rgba(255,255,255,0.1); padding:12px 16px; border-radius:8px; border:2px solid #a855f7; align-items:center; gap:8px; color:#fff; font-size:0.9rem;">
+            <div id="ai-preview-doc" style="display:none; background:rgba(255,255,255,0.1); padding:12px 16px; border-radius:8px; border:2px solid #a855f7; align-items:center; gap:8px; color: var(--text-main); font-size:0.9rem;">
                 <i class="fa-solid fa-file"></i> <span id="ai-preview-doc-name"></span>
             </div>
             <button class="ai-image-remove" onclick="removeAIImage()" title="Hapus Lampiran"><i class="fa-solid fa-xmark"></i></button>
