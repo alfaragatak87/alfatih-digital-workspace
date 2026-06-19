@@ -198,11 +198,7 @@ a{color:inherit;text-decoration:none;}
   box-shadow:var(--shadow-sm),var(--glow-sm);
 }
 .search-bar input::placeholder{color:var(--text-muted);}
-.search-bar i{
-  position:absolute;left:12px;top:50%;
-  transform:translateY(-50%);
-  color:var(--text-muted);font-size:.82rem;
-}
+
 .header-right{display:flex;align-items:center;gap:4px;min-width:200px;justify-content:flex-end;}
 .stats-badge{
   font-size:.7rem;
@@ -750,7 +746,7 @@ body.sidebar-hidden .main-wrapper {
   box-shadow:var(--shadow-xl);
   overflow:hidden;
 }
-.dropdown:hover .dropdown-content{display:block;animation:scaleIn .18s var(--ease-out-expo);}
+.dropdown.show .dropdown-content{display:block;animation:scaleIn .18s var(--ease-out-expo);}
 .dropdown-content button{
   display:flex;align-items:center;gap:14px;
   width:100%;padding:12px 16px;
@@ -1795,7 +1791,7 @@ body.sidebar-hidden .main-wrapper {
 
 .top-navbar { background: var(--bg); border-bottom: 1px solid var(--border); box-shadow: none; height: 64px; padding: 8px 16px; }
 .sidebar { background: var(--bg); border-right: 1px solid var(--border); width: 256px; padding-top: 12px; }
-.main-wrapper { margin-left: 256px; padding-top: 64px; }
+.main-wrapper { margin-left: 256px; }
 .nav-item { margin: 2px 12px; border-radius: 12px; padding: 8px 16px; color: var(--text-secondary); font-size: 0.875rem; font-weight: 500; font-family: 'Inter', sans-serif; transition: all 0.2s ease; }
 .nav-item:hover { background: var(--surface-2); color: var(--text-main); }
 .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
@@ -1977,10 +1973,18 @@ body.sidebar-hidden .main-wrapper {
 <div class="sidebar" id="sidebar">
 <?php if($current_page === 'workspace'): ?>
     <div style="padding: 8px 16px 16px;">
-        <button class="btn-drive-new" onclick="openModal('addItemModal');switchType('file');">
-            <svg width="36" height="36" viewBox="0 0 36 36"><path fill="#EA4335" d="M16 16v-10h4v10z"></path><path fill="#FBBC05" d="M26 16v4h-10v-4z"></path><path fill="#4285F4" d="M16 26v-10h-4v10z"></path><path fill="#34A853" d="M6 16v4h10v-4z"></path></svg>
-            <span>Baru</span>
-        </button>
+        <div class="dropdown" style="width: 100%;">
+          <button class="btn-drive-new" onclick="event.stopPropagation(); this.nextElementSibling.classList.toggle('show');" style="width: 100%;">
+              <svg width="36" height="36" viewBox="0 0 36 36"><path fill="#EA4335" d="M16 16v-10h4v10z"></path><path fill="#FBBC05" d="M26 16v4h-10v-4z"></path><path fill="#4285F4" d="M16 26v-10h-4v10z"></path><path fill="#34A853" d="M6 16v4h10v-4z"></path></svg>
+              <span>Baru</span>
+          </button>
+          <div class="dropdown-content" style="width: 100%; top: 100%; left: 0; margin-top: 8px;">
+                <button onclick="openModal('addFolderModal')"><i class="fa-solid fa-folder-plus"></i><div><strong>Folder Baru</strong></div></button>
+                <hr class="menu-divider">
+                <button onclick="openModal('addItemModal');switchType('file');"><i class="fa-solid fa-file-arrow-up"></i><div><strong>Upload File</strong></div></button>
+                <button onclick="openModal('addItemModal');switchType('link');"><i class="fa-solid fa-link"></i><div><strong>Simpan Tautan</strong></div></button>
+          </div>
+        </div>
     </div>
     
     <a href="index.php?page=beranda" class="nav-item <?= $current_page==='beranda'?'active':'' ?>"><i class="fa-solid fa-house"></i> Beranda</a>
@@ -2175,7 +2179,7 @@ body.sidebar-hidden .main-wrapper {
 
 
 <!-- âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-require_once '02_dasbor_utama/4_komponen_modal.php';
+
      JAVASCRIPT â COMPLETE
 ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
 <script>
@@ -2207,7 +2211,7 @@ function closeAllMenus() {
 document.addEventListener('click', function(e) {
     if (!e.target.closest('.profile-container')) document.getElementById('profileMenu').classList.remove('show');
     if (!e.target.closest('.action-wrapper') && !e.target.closest('.btn-dots')) document.querySelectorAll('.action-dropdown.show').forEach(d => d.classList.remove('show'));
-    if (!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = '');
+    if (!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown-content.show').forEach(d => d.classList.remove('show'));
 });
 
 // ââ MODALS âââââââââââââââââââââââââââââââââââââââââââââââââââ
@@ -2866,12 +2870,52 @@ if ('serviceWorker' in navigator) {
 <!-- Mengikutkan Widget Kalkulator -->
 <?php include '02_dasbor_utama/6_kalkulator_widget.php'; ?>
 
+<?php require_once '02_dasbor_utama/4_komponen_modal.php'; ?>
 <script>
   const CSRF = '<?= h($csrf_token) ?>';
   const CURRENT_USERNAME = '<?= h($username) ?>';
 </script>
 <script src="aset/js/context_menu.js"></script>
+
+<div class="dropdown-content" id="globalContextMenu" style="display:none; position:fixed; z-index:99999; margin:0; min-width: 220px;">
+    <button onclick="openModal('addFolderModal')"><i class="fa-solid fa-folder-plus"></i><div><strong>Folder Baru</strong></div></button>
+    <hr class="menu-divider">
+    <button onclick="openModal('addItemModal');switchType('file');"><i class="fa-solid fa-file-arrow-up"></i><div><strong>Upload File</strong></div></button>
+    <button onclick="openModal('addItemModal');switchType('link');"><i class="fa-solid fa-link"></i><div><strong>Simpan Tautan</strong></div></button>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const wsContainer = document.getElementById('mainContextArea');
+    if(wsContainer) {
+        wsContainer.addEventListener('contextmenu', function(e) {
+            if (e.target.closest('.item-card') || e.target.closest('.list-header') || e.target.closest('.breadcrumbs')) return;
+            e.preventDefault();
+            const cm = document.getElementById('globalContextMenu');
+            cm.style.display = 'block';
+            
+            // Boundary detection
+            let cx = e.clientX;
+            let cy = e.clientY;
+            if (cx + 220 > window.innerWidth) cx = window.innerWidth - 220;
+            if (cy + 160 > window.innerHeight) cy = window.innerHeight - 160;
+            
+            cm.style.left = cx + 'px';
+            cm.style.top = cy + 'px';
+            cm.classList.add('show');
+        });
+    }
+    
+    document.addEventListener('click', function(e) {
+        const cm = document.getElementById('globalContextMenu');
+        if (cm && cm.classList.contains('show')) {
+            cm.classList.remove('show');
+            setTimeout(() => cm.style.display = 'none', 150);
+        }
+    });
+});
+</script>
 </body>
+
 </html>
 
 

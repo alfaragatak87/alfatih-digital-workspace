@@ -8,10 +8,7 @@
 ?>
 <div class="toolbar-main">
     <div class="toolbar-left">
-        <div class="dropdown">
-            <button class="btn-drive-new"><i class="fa-solid fa-plus"></i> Buat Baru</button>
-            <div class="dropdown-content">
-                <button onclick="openModal('addFolderModal')"><i class="fa-solid fa-folder-plus"></i><div><strong>Folder Baru</strong><div class="dd-desc">Buat ruang penyimpanan baru</div></div></button>
+        </button>
                 <hr class="menu-divider">
                 <?php if($active_folder){?>
                 <button onclick="openModal('addItemModal');switchType('file');"><i class="fa-solid fa-file-arrow-up"></i><div><strong>Upload File</strong><div class="dd-desc">Pilih dari komputer Anda</div></div></button>
